@@ -4,13 +4,8 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true
-<<<<<<< HEAD
-  }
-}
-=======
   },
   "generateOptions": {
     "spec": false
   }
 }
->>>>>>> Nael-HR
