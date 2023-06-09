@@ -18,20 +18,13 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-<<<<<<< HEAD
-    "stg": "stg -D postgres -h localhost -p 5432 -d backend_db -u postgres -x ikhsan227g --indices --out-dir models -a ./src/association.csv --clean "
-=======
     "db_master": "stg -D postgres -h localhost -p 5432 -d miniproject -u postgres -x nata1997 -i -o models/masterSchema -s master",
     "db_users": "stg -D postgres -h localhost -p 5432 -d miniproject -u postgres -x nata1997 -i -o models/usersSchema -s users -a ./association.csv -- clean"
->>>>>>> Nael-HR
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
-<<<<<<< HEAD
-=======
     "@nestjs/jwt": "^10.0.3",
->>>>>>> Nael-HR
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^9.4.0",
     "@nestjs/sequelize": "^9.0.2",
@@ -55,10 +48,7 @@
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
-<<<<<<< HEAD
-=======
     "@types/bcrypt": "^5.0.0",
->>>>>>> Nael-HR
     "@types/express": "^4.17.17",
     "@types/jest": "29.5.0",
     "@types/multer": "^1.4.7",
