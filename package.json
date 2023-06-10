@@ -18,8 +18,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db_master": "stg -D postgres -h localhost -p 5432 -d miniproject -u postgres -x nata1997 -i -o models/masterSchema -s master",
-    "db_users": "stg -D postgres -h localhost -p 5432 -d miniproject -u postgres -x nata1997 -i -o models/usersSchema -s users -a ./association.csv -- clean"
+    "db_master": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/masterSchema -s master",
+    "db_users": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/usersSchema -s users -a ./association.csv -- clean",
+    "db_curriculum": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/curriculumSchema -s curriculum",
+    "db_bootcamp": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/bootcampSchema -s bootcamp",
+    "db_hr": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/hrSchema -s hr"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
