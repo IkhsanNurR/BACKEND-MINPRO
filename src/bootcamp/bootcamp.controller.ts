@@ -20,19 +20,55 @@ export class BootcampController {
     return this.bootcampService.create(createBootcampDto);
   }
 
+  //get semua
   @Get()
   FindAllBatch() {
     return this.bootcampService.AppBatchFindAll();
   }
 
-  @Get(":id")
+  @Get("findBatch/:id")
   FindBatchById(@Param("id") id: number) {
     return this.bootcampService.AppBatchFindById(+id);
   }
 
   @Get("members/:id")
   FindMembersBatchById(@Param("id") id: number) {
-    return this.bootcampService.AppBatchMembers(+id);
+    return this.bootcampService.GetAppBatchMembers(+id);
+  }
+
+  @Get("progname")
+  FindProgname() {
+    return this.bootcampService.GetProgName();
+  }
+
+  @Get("trainer")
+  FindTrainerName() {
+    return this.bootcampService.GetTrainerName();
+  }
+
+  @Get("orangdaftarupdate")
+  FindOrangDaftarUpdate() {
+    return this.bootcampService.GetOrangCreateUpdateBatch();
+  }
+
+  @Get("orangapply")
+  FindOrangApply() {
+    return this.bootcampService.GetOrangApply();
+  }
+
+  @Get("orangfiltering")
+  FindOrangFiltering() {
+    return this.bootcampService.GetOrangFiltering();
+  }
+
+  @Get("orangcontract")
+  FindOrangContract() {
+    return this.bootcampService.GetOrangContract();
+  }
+
+  @Get("orangnotresponding")
+  FindOrangNotResponding() {
+    return this.bootcampService.GetOrangNotResponding();
   }
 
   // @Get(":id")

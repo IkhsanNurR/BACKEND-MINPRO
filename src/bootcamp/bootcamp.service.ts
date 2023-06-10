@@ -19,7 +19,7 @@ export class BootcampService {
         "SELECT * FROM bootcamp.appbatch"
       );
       const promises = data[0].map(async (e: any) => {
-        const data2 = await this.AppBatchMembers(e.batch_id);
+        const data2 = await this.GetAppBatchMembers(e.batch_id);
         const gabung: any = {
           batch_id: e.batch_id,
           batch_name: e.batch_name,
@@ -30,11 +30,13 @@ export class BootcampService {
           batch_status: e.batch_status,
           members: data2,
         };
-        console.log(gabung);
         result.push(gabung);
       });
 
       await Promise.all(promises);
+      if (result.length == 0) {
+        throw new Error("Kosong");
+      }
       return result;
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
@@ -48,7 +50,7 @@ export class BootcampService {
         `SELECT * FROM bootcamp.appbatch where batch_id = ${id}`
       );
       const promises = data[0].map(async (e: any) => {
-        const data2 = await this.AppBatchMembers(e.batch_id);
+        const data2 = await this.GetAppBatchMembers(e.batch_id);
         const gabung: any = {
           batch_id: e.batch_id,
           batch_name: e.batch_name,
@@ -59,24 +61,127 @@ export class BootcampService {
           batch_status: e.batch_status,
           members: data2,
         };
-        console.log(gabung);
         result.push(gabung);
       });
 
       await Promise.all(promises);
+      if (result.length == 0) {
+        throw new Error("Kosong");
+      }
       return result;
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
     }
   }
 
-  async AppBatchMembers(id: any) {
+  async GetAppBatchMembers(id: any) {
     try {
       const data = await this.sequelize.query(
         `SELECT * FROM bootcamp.appbatchmembers where batch_id = ${id}`
       );
+      if (data[0].length == 0) {
+        throw new Error("Kosong");
+      }
       return data[0];
     } catch (error) {}
+  }
+
+  async GetProgName() {
+    try {
+      const data = await this.sequelize.query(
+        "SELECT prog_entity_id,prog_title, prog_type from curriculum.program_entity"
+      );
+      if (data[0].length == 0) {
+        throw new Error("Kosong");
+      }
+      return data[0];
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal!");
+    }
+  }
+
+  async GetTrainerName() {
+    try {
+      const data = await this.sequelize.query(
+        "SELECT * from bootcamp.view_trainer"
+      );
+      if (data[0].length == 0) {
+        throw new Error("Kosong]");
+      }
+      return data[0];
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal!");
+    }
+  }
+
+  async GetOrangCreateUpdateBatch() {
+    try {
+      const data = await this.sequelize.query(
+        "SELECT * FROM bootcamp.view_orang_create_batch"
+      );
+      if (data[0].length == 0) {
+        throw new Error("Kosong");
+      }
+      return data[0];
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async GetOrangApply() {
+    try {
+      const data = await this.sequelize.query(
+        "SELECT * FROM bootcamp.OrangApply"
+      );
+      if (data[0].length == 0) {
+        throw new Error("Kosong");
+      }
+      return data[0];
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async GetOrangFiltering() {
+    try {
+      const data = await this.sequelize.query(
+        "SELECT * FROM bootcamp.orangfiltering"
+      );
+      if (data[0].length == 0) {
+        throw new Error("Kosong");
+      }
+      return data[0];
+    } catch (error) {
+      return messageHelper(error.message, 400, "GAGAL");
+    }
+  }
+
+  async GetOrangContract() {
+    try {
+      const data = await this.sequelize.query(
+        "SELECT * FROM bootcamp.orangcontract"
+      );
+      if (data[0].length == 0) {
+        throw new Error("Kosong]");
+      }
+      return data[0];
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async GetOrangNotResponding() {
+    try {
+      const data = await this.sequelize.query(
+        "SELECT * FROM bootcamp.orangnotresponding"
+      );
+      if (data[0].length == 0) {
+        throw new Error("Kosong]");
+      }
+      return data[0];
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
   }
 
   findOne(id: number) {
