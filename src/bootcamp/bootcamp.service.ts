@@ -37,7 +37,7 @@ export class BootcampService {
       if (result.length == 0) {
         throw new Error("Kosong");
       }
-      return result;
+      return messageHelper(result, 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
     }
@@ -68,7 +68,7 @@ export class BootcampService {
       if (result.length == 0) {
         throw new Error("Kosong");
       }
-      return result;
+      return messageHelper(result, 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
     }
@@ -82,7 +82,9 @@ export class BootcampService {
       if (data[0].length == 0) {
         throw new Error("Kosong");
       }
+      console.log(data[0]);
       return data[0];
+      // return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {}
   }
 
@@ -94,7 +96,7 @@ export class BootcampService {
       if (data[0].length == 0) {
         throw new Error("Kosong");
       }
-      return data[0];
+      return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal!");
     }
@@ -108,7 +110,7 @@ export class BootcampService {
       if (data[0].length == 0) {
         throw new Error("Kosong]");
       }
-      return data[0];
+      return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal!");
     }
@@ -122,7 +124,7 @@ export class BootcampService {
       if (data[0].length == 0) {
         throw new Error("Kosong");
       }
-      return data[0];
+      return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
     }
@@ -136,7 +138,7 @@ export class BootcampService {
       if (data[0].length == 0) {
         throw new Error("Kosong");
       }
-      return data[0];
+      return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
     }
@@ -150,7 +152,7 @@ export class BootcampService {
       if (data[0].length == 0) {
         throw new Error("Kosong");
       }
-      return data[0];
+      return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "GAGAL");
     }
@@ -164,7 +166,7 @@ export class BootcampService {
       if (data[0].length == 0) {
         throw new Error("Kosong]");
       }
-      return data[0];
+      return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
     }
@@ -178,7 +180,7 @@ export class BootcampService {
       if (data[0].length == 0) {
         throw new Error("Kosong]");
       }
-      return data[0];
+      return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
     }
