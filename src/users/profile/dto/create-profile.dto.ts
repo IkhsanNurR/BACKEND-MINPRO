@@ -7,4 +7,5 @@ export class CreateProfileDto implements usersAttributes {
     user_last_name?: string;
     user_birth_date?: string;
     user_photo?: string;
+    user_password?: string;
 }

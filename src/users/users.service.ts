@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { users, users_email } from 'models/usersSchema';
+import { users, users_email, users_roles } from 'models/usersSchema';
 import * as bcrypt from 'bcrypt'
 import { Sequelize } from 'sequelize-typescript';
+import { QueryTypes } from 'sequelize';
 
 @Injectable()
 export class UsersService {
@@ -12,12 +13,12 @@ export class UsersService {
     private sequelize: Sequelize
   ) { }
 
-  async signUpBootcamp(createUserDto: CreateUserDto) {
+  async signUpStudent(createUserDto: CreateUserDto) {
     try {
       let phoneCode = 'Cell'
       createUserDto.uspo_ponty_code = phoneCode
 
-      let role = 2
+      let role = 6
       createUserDto.usro_role_id = role
 
       let passHash = await bcrypt.hash(createUserDto.user_password, 10)
@@ -45,16 +46,28 @@ export class UsersService {
 
   }
 
-  async findAll() {
+  async findAllKandidat() {
     try {
-      return await users.findAll({
-        include: [
-          {
-            model: users_email
-          }
-        ],
-        order: [['user_entity_id', 'desc']]
-      })
+      const res = await this.sequelize.query('select * from users.userskandidat')
+      return res[0]
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async findAllTalent() {
+    try {
+      const res = await this.sequelize.query('select * from users.userstalent')
+      return res[0]
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async findAllUsers() {
+    try {
+      const res = await this.sequelize.query('select * from users.usersall')
+      return res[0]
     } catch (error) {
       return error.message
     }
@@ -62,16 +75,12 @@ export class UsersService {
 
   async findByName(username: string): Promise<any> {
     try {
-      const data = await users.findOne({
-        where: {
-          user_name: username
-        }, include: [
-          {
-            model: users_email
-          }
-        ]
+      const data = await this.sequelize.query('select * from users.usersall where user_name = :username', {
+        replacements: { username },
+        type: QueryTypes.SELECT
       })
-      return data
+      if (!data[0]) throw new Error("Data users tidak ditemukan")
+      return data[0]
     } catch (error) {
       return error.message
     }
@@ -79,18 +88,12 @@ export class UsersService {
 
   async findByEmail(email: string): Promise<any> {
     try {
-      const data = await users.findOne(
-        {
-          include: [{
-            model: users_email,
-            where: {
-              pmail_address: email
-            }
-          }
-          ]
-        },
-      )
-      return data
+      const data = await this.sequelize.query('select * from users.usersall where pmail_address = :email', {
+        replacements: { email },
+        type: QueryTypes.SELECT
+      })
+      if (!data[0]) throw new Error("Data users tidak ditemukan")
+      return data[0]
     } catch (error) {
       return error.message
     }

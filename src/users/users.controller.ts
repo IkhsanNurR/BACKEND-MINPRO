@@ -7,14 +7,24 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
-  @Post('/bootcamp')
+  @Post('/student')
   signUpExternal(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.signUpBootcamp(createUserDto);
+    return this.usersService.signUpStudent(createUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @Get('/kandidat')
+  findAllKandidat() {
+    return this.usersService.findAllKandidat()
+  }
+
+  @Get('talent')
+  findAllTalent(){
+    return this.usersService.findAllTalent()
+  }
+
+  @Get('all')
+  findAllUsers(){
+    return this.usersService.findAllUsers()
   }
 
   @Get('/username/:username')
@@ -26,5 +36,4 @@ export class UsersController {
   findByEmail(@Param('email') email: string) {
     return this.usersService.findByEmail(email);
   }
-
 }

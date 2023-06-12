@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { ProfileController } from './profile.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { users } from 'models/usersSchema';
+import { users, users_email } from 'models/usersSchema';
 
 @Module({
-  imports:[SequelizeModule.forFeature([users])],
+  imports: [SequelizeModule.forFeature([users, users_email])],
   controllers: [ProfileController],
   providers: [ProfileService],
+  exports: [ProfileService]
 })
-export class ProfileModule {}
+export class ProfileModule { }

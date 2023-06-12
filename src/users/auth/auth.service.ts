@@ -18,22 +18,22 @@ export class AuthService {
 
       if (checkEmailOrUsername(loginDto.usernameOrEmail) === 'Email') {
         res = await this.userService.findByEmail(loginDto.usernameOrEmail)
-        if (!res) throw new Error("Email Tidak Ada")
+        if (typeof res != 'object') throw new Error("Email Tidak Ada")
       } else {
         res = await this.userService.findByName(loginDto.usernameOrEmail)
-        if (!res) throw new Error("Username Tidak Ada")
+        if (typeof res != "object") throw new Error("Username Tidak Ada")
       }
 
       const match = await bcrypt.compare(loginDto.password, res.user_password)
       if (!match) throw new Error("password salah")
 
-      const payload = { username: loginDto.usernameOrEmail, sub: loginDto.user_entity_id }
+      const payload = { aud: loginDto.usernameOrEmail, sub: res.role_name }
 
       const token = await this.jwtService.signAsync(payload)
 
       return { token }
     } catch (error) {
-      return error.message
+      return { message: error.message }
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Body, Patch, Param, ParseFilePipeBuilder, HttpStatus, UseInterceptors, UploadedFile, Get } from '@nestjs/common';
+import { Controller, Body, Patch, Param, ParseFilePipeBuilder, HttpStatus, UseInterceptors, UploadedFile, Get, Post } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { diskStorage } from 'multer';
@@ -34,11 +34,23 @@ const validateImage = new ParseFilePipeBuilder()
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) { }
 
-  @Patch(':id')
+  @Patch('/editprofile/:id')
   @UseInterceptors(FileInterceptor('user_photo', multerConfig))
-  update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto, @UploadedFile(validateImage) file: Express.Multer.File) {
+  updateProfile(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto,
+    @UploadedFile(validateImage) file: Express.Multer.File
+  ) {
     updateProfileDto.user_photo = file.filename
-    return this.profileService.update(+id, updateProfileDto);
+    return this.profileService.editProfile(+id, updateProfileDto, file);
+  }
+
+  @Patch('/changePassword/:id')
+  updatePassword(@Param('id') id: string, @Body() UpdateProfileDto: UpdateProfileDto) {
+    return this.profileService.changePassword(+id, UpdateProfileDto)
+  }
+
+  @Post('/addEmail/:id')
+  addEmail(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.profileService.addEmail(+id, updateProfileDto)
   }
 
   @Get(':id')
