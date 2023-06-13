@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { CreateBootcampDto } from "./dto/create-bootcamp.dto";
 import { UpdateBootcampDto } from "./dto/update-bootcamp.dto";
-import { batch } from "models/bootcampSchema";
+import { batch, program_apply_progress } from "models/bootcampSchema";
 import { Sequelize } from "sequelize-typescript";
 import messageHelper from "src/messagehelper/message";
+import { where } from "sequelize";
 
 @Injectable()
 export class BootcampService {
@@ -23,6 +24,7 @@ export class BootcampService {
         const gabung: any = {
           batch_id: e.batch_id,
           batch_name: e.batch_name,
+          batch_type: e.batch_type,
           technology: e.technology,
           batch_start_date: e.batch_start_date,
           batch_end_date: e.batch_end_date,
@@ -57,6 +59,7 @@ export class BootcampService {
         const gabung: any = {
           batch_id: e.batch_id,
           batch_name: e.batch_name,
+          batch_type: e.batch_type,
           technology: e.technology,
           batch_start_date: e.batch_start_date,
           batch_end_date: e.batch_end_date,
@@ -187,6 +190,51 @@ export class BootcampService {
         throw new Error("Kosong]");
       }
       return messageHelper(data[0], 200, "Berhasil");
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  //post
+  async PostCreateBatch(data: any) {
+    try {
+      //batchnya
+      const data1: any[] = [data.batch];
+
+      //trainee nya
+      const batchTrainees: any = data.batchTrainees;
+      const data2: any[] = batchTrainees.map((traineeId) => {
+        return {
+          batr_status: "selected",
+          batr_access_token: "access_token",
+          batr_access_grant: "0",
+          batr_trainee_entity_id: traineeId,
+        };
+      });
+
+      //trainernya
+      const trainerPrograms: any = data.trainerPrograms;
+      const data3: any[] = trainerPrograms.map((trainerId) => {
+        return {
+          tpro_entity_id: data.batch.batch_entity_id,
+          tpro_emp_entity_id: trainerId,
+        };
+      });
+      console.log(data1, data2, data3);
+      return { data1, data2, data3 };
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal Create");
+    }
+  }
+
+  async UpdateCandidateStatusApply(data: any) {
+    //update candidate ke status filtering
+    try {
+      const result = await program_apply_progress.update(
+        { parog_progress_name: data.prog_name, parog_status: "ready test" },
+        { where: { parog_user_entity_id: data.user } }
+      );
+      return data;
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
     }

@@ -71,6 +71,21 @@ export class BootcampController {
     return this.bootcampService.GetOrangNotResponding();
   }
 
+  @Get("orangtrainer")
+  FindTrainer() {
+    return this.bootcampService.GetTrainerName;
+  }
+
+  //post
+  @Post("createbatch")
+  async PostCreateBatch(@Body() data: any): Promise<any> {
+    return await this.bootcampService.PostCreateBatch(data);
+  }
+
+  @Patch("updatestatusapply")
+  async PostUpdateStatusApply(@Body() data: any) {
+    return await this.bootcampService.UpdateCandidateStatusApply(data);
+  }
   // @Get(":id")
   // findOne(@Param("id") id: string) {
   //   return this.bootcampService.findOne(+id);
