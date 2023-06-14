@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { MasterModule } from './master/master.module';
 import { HrModule } from './hr/hr.module';
 import { CurriculumModule } from './curriculum/curriculum.module';
 import { BootcampModule } from './bootcamp/bootcamp.module';
@@ -10,6 +9,10 @@ import { SalesModule } from './sales/sales.module';
 import { PaymentModule } from './payment/payment.module';
 import { ProfileModule } from './users/profile/profile.module';
 import { AuthModule } from './users/auth/auth.module';
+import { CityModule } from './master/city/city.module';
+import { AddressTypeModule } from './master/address_type/address_type.module';
+import { SkillTypeModule } from './master/skill_type/skill_type.module';
+import { AddressModule } from './master/address/address.module';
 
 @Module({
   imports: [
@@ -25,7 +28,6 @@ import { AuthModule } from './users/auth/auth.module';
       synchronize: true
     }),
     UsersModule,
-    MasterModule,
     HrModule,
     CurriculumModule,
     BootcampModule,
@@ -33,7 +35,11 @@ import { AuthModule } from './users/auth/auth.module';
     SalesModule,
     PaymentModule,
     ProfileModule,
-    AuthModule
+    AuthModule,
+    CityModule,
+    AddressTypeModule,
+    SkillTypeModule,
+    AddressModule
   ],
   controllers: [],
   providers: [],

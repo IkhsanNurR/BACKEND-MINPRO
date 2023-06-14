@@ -1,17 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { phone_number_type, users, users_email, users_phones } from 'models/usersSchema';
+import { phone_number_type, users, users_address, users_email, users_phones } from 'models/usersSchema';
 import * as bcrypt from 'bcrypt'
 import * as fs from 'fs'
+import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class ProfileService {
   constructor(
+    private sequelize: Sequelize,
     @InjectModel(users) private readonly User: typeof users,
     @InjectModel(users_email) private readonly UserEmail: typeof users_email,
     @InjectModel(users_phones) private readonly UserPhone: typeof users_phones,
-    @InjectModel(phone_number_type) private readonly PhoneType: typeof phone_number_type
+    @InjectModel(phone_number_type) private readonly PhoneType: typeof phone_number_type,
+    @InjectModel(users_address) private readonly UserAddress: typeof users_address
   ) { }
 
   async editProfile(id: number, updateProfileDto: UpdateProfileDto, file?: Express.Multer.File) {
@@ -73,7 +76,6 @@ export class ProfileService {
           user_entity_id: id
         }
       })
-
       return {
         data: res,
         status: 200,
@@ -182,6 +184,80 @@ export class ProfileService {
         }
       })
 
+      return {
+        message: 'sukses',
+        status: 200
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async addAddress(id: number, updateProfileDto: UpdateProfileDto) {
+    try {
+      let replacements: any = {
+        entityId: id,
+        address1: updateProfileDto.newAddressLine1,
+        addressPostalCode: updateProfileDto.newAddressPostalCode,
+        addressCityId: updateProfileDto.newAddressCityId,
+        addressTypeId: updateProfileDto.newAddressTypeId,
+        address2: updateProfileDto.newAddressLine2 ?? ''
+      };
+
+      if (updateProfileDto.newAddressLine2) {
+        replacements.address2 = updateProfileDto.newAddressLine2;
+      }
+
+      const res = await this.sequelize.query('CALL users.addAddress(:entityId,:address1,:addressPostalCode,:addressCityId,:addressTypeId' + (replacements.address2 ? ',:address2' : '') + ')', {
+        replacements
+      });
+
+      return {
+        data: res,
+        status: 200,
+        message: "sukses"
+      };
+    } catch (error) {
+      return error.message;
+    }
+  }
+
+  async editAddress(id: number, updateProfileDto: UpdateProfileDto) {
+    try {
+      let replacements: any = {
+        addressId: id,
+        address1: updateProfileDto.newAddressLine1,
+        addressPostalCode: updateProfileDto.newAddressPostalCode,
+        addressCityId: updateProfileDto.newAddressCityId,
+        addressTypeId: updateProfileDto.newAddressTypeId,
+        address2: updateProfileDto.newAddressLine2 ?? ''
+      };
+
+      if (updateProfileDto.newAddressLine2) {
+        replacements.address2 = updateProfileDto.newAddressLine2;
+      }
+
+      const res = await this.sequelize.query('CALL users.editAddress(:addressId,:address1,:addressPostalCode,:addressCityId,:addressTypeId' + (replacements.address2 ? ',:address2' : '') + ')', {
+        replacements
+      });
+
+      return {
+        data: res,
+        status: 200,
+        message: 'sukses'
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async deleteAddress(id: number) {
+    try {
+      await this.UserAddress.destroy({
+        where: {
+          etad_addr_id: id
+        }
+      })
       return {
         message: 'sukses',
         status: 200

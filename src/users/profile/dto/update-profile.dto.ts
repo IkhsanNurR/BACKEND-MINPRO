@@ -7,4 +7,9 @@ export class UpdateProfileDto extends PartialType(CreateProfileDto) {
     newEmail?: string
     newPhone?: string
     newPontyCode?: string
+    newAddressLine1?: string
+    newAddressLine2?: string
+    newAddressPostalCode?: string
+    newAddressCityId?: number
+    newAddressTypeId?: number
 }

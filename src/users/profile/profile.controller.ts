@@ -84,7 +84,6 @@ export class ProfileController {
     return this.profileService.addPhone(+id, updateProfileDto)
   }
 
-
   @Patch('/editPhone/:id/:phone_number')
   editPhone(@Param('id') id: number, @Param('phone_number') phone_number: any, @Body() updateProfileDto: UpdateProfileDto) {
     return this.profileService.editPhone(+id, phone_number, updateProfileDto)
@@ -93,6 +92,21 @@ export class ProfileController {
   @Delete('/deletePhone/:id/:phone_number')
   deletePhone(@Param('id') id: number, @Param('phone_number') phone_number: any) {
     return this.profileService.deletePhone(+id, phone_number)
+  }
+
+  @Post('/addAddress/:id')
+  addAddress(@Param('id') id: number, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.profileService.addAddress(+id, updateProfileDto)
+  }
+
+  @Patch('/editAddress/:id')
+  editAddress(@Param('id') id: number, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.profileService.editAddress(+id, updateProfileDto)
+  }
+
+  @Delete('/deleteAddress/:id')
+  deleteAddress(@Param('id') id: number) {
+    return this.profileService.deleteAddress(+id)
   }
 
   @Get(':id')

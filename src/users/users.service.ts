@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { users, users_email, users_roles } from 'models/usersSchema';
 import * as bcrypt from 'bcrypt'
 import { Sequelize } from 'sequelize-typescript';
 import { QueryTypes } from 'sequelize';
