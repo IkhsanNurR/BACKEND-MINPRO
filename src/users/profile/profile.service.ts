@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { users, users_email } from 'models/usersSchema';
+import { phone_number_type, users, users_email, users_phones } from 'models/usersSchema';
 import * as bcrypt from 'bcrypt'
 import * as fs from 'fs'
 
@@ -9,81 +9,48 @@ import * as fs from 'fs'
 export class ProfileService {
   constructor(
     @InjectModel(users) private readonly User: typeof users,
-    @InjectModel(users_email) private readonly UserEmail: typeof users_email
+    @InjectModel(users_email) private readonly UserEmail: typeof users_email,
+    @InjectModel(users_phones) private readonly UserPhone: typeof users_phones,
+    @InjectModel(phone_number_type) private readonly PhoneType: typeof phone_number_type
   ) { }
 
-  async editProfile(id: number, updateProfileDto: UpdateProfileDto, file: Express.Multer.File) {
+  async editProfile(id: number, updateProfileDto: UpdateProfileDto, file?: Express.Multer.File) {
     try {
       const user = await this.findOne(id)
 
       let setImage = user.user_photo
 
-      // if (updateProfileDto.user_photo) {
-      //   fs.unlinkSync('./public/users/' + user.user_photo);
-      //   setImage = file.filename;
-      // }
-  
-      // const res = await this.User.update({
-      //   user_name: updateProfileDto.user_name,
-      //   user_first_name: updateProfileDto.user_first_name,
-      //   user_last_name: updateProfileDto.user_last_name,
-      //   user_birth_date: updateProfileDto.user_birth_date,
-      //   user_photo: setImage,
-      // }, {
-      //   where: {
-      //     user_entity_id: id,
-      //   },
-      // });
-  
-      // return {
-      //   data: res,
-      //   status: 200,
-      //   message: 'sukses',
-      // };
-  
-
-      if (setImage === null) {
-        const res = await this.User.update({
-          user_name: updateProfileDto.user_name,
-          user_first_name: updateProfileDto.user_first_name,
-          user_last_name: updateProfileDto.user_last_name,
-          user_birth_date: updateProfileDto.user_birth_date,
-          user_photo: updateProfileDto.user_photo
-        }, {
-          where: {
-            user_entity_id: id
-          }
-        })
-        return {
-          data: res,
-          status: 200,
-          message: 'sukses'
+      if (file) {
+        if (setImage !== null) {
+          fs.unlinkSync('./public/users/' + user.user_photo);
         }
-      } else if (setImage.length > 0) {
-
-        if (updateProfileDto.user_photo) {
-          fs.unlinkSync('./public/users/' + user.user_photo)
-          setImage = file.filename
-        }
-        const res = await this.User.update({
-          user_name: updateProfileDto.user_name,
-          user_first_name: updateProfileDto.user_first_name,
-          user_last_name: updateProfileDto.user_last_name,
-          user_birth_date: updateProfileDto.user_birth_date,
-          user_photo: setImage
-        }, {
-          where: {
-            user_entity_id: id
-          }
-        })
-        return {
-          data: res,
-          status: 200,
-          message: 'sukses'
-        }
+        setImage = file.filename;
       }
 
+      const res = await this.User.update(
+        {
+          user_name: updateProfileDto.user_name,
+          user_first_name: updateProfileDto.user_first_name,
+          user_last_name: updateProfileDto.user_last_name,
+          user_birth_date: updateProfileDto.user_birth_date,
+          user_photo: setImage || updateProfileDto.user_photo,
+        },
+        {
+          where: {
+            user_entity_id: id,
+          },
+          returning: true
+        }
+      );
+      return {
+        data: res,
+        status: 200,
+        message: "sukses"
+      }
     } catch (error) {
+      if (file && updateProfileDto.user_photo) {
+        fs.unlinkSync('./public/users/' + file.filename);
+      }
       return error.message
     }
   }
@@ -123,6 +90,110 @@ export class ProfileService {
         pmail_entity_id: id,
         pmail_address: updateProfileDto.newEmail
       })
+      return {
+        data: res,
+        status: 200,
+        message: "sukses"
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async editEmail(id: number, updateProfileDto: UpdateProfileDto) {
+    try {
+      const res = await this.UserEmail.update({
+        pmail_address: updateProfileDto.newEmail
+      }, {
+        where: {
+          pmail_id: id
+        }
+      })
+      return {
+        data: res,
+        status: 200,
+        message: "sukses"
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async deleteEmail(id: number) {
+    try {
+      await this.UserEmail.destroy({
+        where: {
+          pmail_id: id
+        }
+      })
+      return {
+        status: 200,
+        message: "Berhasil dihapus"
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async addPhone(id: number, updateProfileDto: UpdateProfileDto) {
+    try {
+      const res = await this.UserPhone.create({
+        uspo_entity_id: id,
+        uspo_number: updateProfileDto.newPhone,
+        uspo_ponty_code: updateProfileDto.newPontyCode
+      })
+      return {
+        data: res,
+        status: 200,
+        message: "sukses"
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async editPhone(id: number, phone_number: any, updateProfileDto: UpdateProfileDto) {
+    try {
+      const res = await this.UserPhone.update({
+        uspo_number: updateProfileDto.newPhone,
+        uspo_ponty_code: updateProfileDto.newPontyCode,
+      }, {
+        where: {
+          uspo_entity_id: id,
+          uspo_number: phone_number
+        }
+      })
+      return {
+        data: res,
+        status: 200,
+        message: 'sukses'
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async deletePhone(id: number, phone_number: any) {
+    try {
+      await this.UserPhone.destroy({
+        where: {
+          uspo_entity_id: id,
+          uspo_number: phone_number
+        }
+      })
+
+      return {
+        message: 'sukses',
+        status: 200
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async getPontyCode(): Promise<any> {
+    try {
+      const res = await this.PhoneType.findAll()
       return {
         data: res,
         status: 200,

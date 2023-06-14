@@ -1,8 +1,9 @@
-import { Controller, Body, Patch, Param, ParseFilePipeBuilder, HttpStatus, UseInterceptors, UploadedFile, Get, Post } from '@nestjs/common';
+import { Controller, Body, Patch, Param, ParseFilePipeBuilder, HttpStatus, UseInterceptors, UploadedFile, Get, Post, Delete, ValidationError, ParseFilePipe, FileTypeValidator } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { diskStorage } from 'multer';
 import * as crypto from 'crypto'
+import * as fs from 'fs'
 import { FileInterceptor } from '@nestjs/platform-express';
 
 const multerConfig = {
@@ -22,13 +23,13 @@ const multerConfig = {
   })
 }
 
-const validateImage = new ParseFilePipeBuilder()
-  .addFileTypeValidator({
-    fileType: 'webp|jpeg|jpg|png|svg',
-  })
-  .build({
-    errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
-  })
+const validateImage = new ParseFilePipe({
+  validators: [new FileTypeValidator({
+    fileType: '.(png|jpg|jpeg|svg)',
+  })]
+  , fileIsRequired: false
+})
+
 
 @Controller('users/profile')
 export class ProfileController {
@@ -37,10 +38,20 @@ export class ProfileController {
   @Patch('/editprofile/:id')
   @UseInterceptors(FileInterceptor('user_photo', multerConfig))
   updateProfile(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto,
-    @UploadedFile(validateImage) file: Express.Multer.File
+    @UploadedFile(validateImage) file?: Express.Multer.File
   ) {
-    updateProfileDto.user_photo = file.filename
-    return this.profileService.editProfile(+id, updateProfileDto, file);
+
+    try {
+      if (file) {
+        updateProfileDto.user_photo = file.filename
+      }
+      return this.profileService.editProfile(+id, updateProfileDto, file);
+    } catch (error) {
+      if (file) {
+        fs.unlinkSync(file.path)
+      }
+      return error.message
+    }
   }
 
   @Patch('/changePassword/:id')
@@ -51,6 +62,37 @@ export class ProfileController {
   @Post('/addEmail/:id')
   addEmail(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
     return this.profileService.addEmail(+id, updateProfileDto)
+  }
+
+  @Patch('/editEmail/:id')
+  editEmail(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.profileService.editEmail(+id, updateProfileDto)
+  }
+
+  @Delete('/deleteEmail/:id')
+  deleteEmail(@Param('id') id: string) {
+    return this.profileService.deleteEmail(+id)
+  }
+
+  @Get('/pontycode')
+  getPontyCode() {
+    return this.profileService.getPontyCode()
+  }
+
+  @Post('/addPhone/:id')
+  addPhone(@Param('id') id: number, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.profileService.addPhone(+id, updateProfileDto)
+  }
+
+
+  @Patch('/editPhone/:id/:phone_number')
+  editPhone(@Param('id') id: number, @Param('phone_number') phone_number: any, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.profileService.editPhone(+id, phone_number, updateProfileDto)
+  }
+
+  @Delete('/deletePhone/:id/:phone_number')
+  deletePhone(@Param('id') id: number, @Param('phone_number') phone_number: any) {
+    return this.profileService.deletePhone(+id, phone_number)
   }
 
   @Get(':id')

@@ -5,4 +5,6 @@ export class UpdateProfileDto extends PartialType(CreateProfileDto) {
     newPassword?: string;
     retypePassword?: string;
     newEmail?: string
+    newPhone?: string
+    newPontyCode?: string
 }
