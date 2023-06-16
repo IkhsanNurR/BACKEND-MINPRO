@@ -1,7 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { CreateBootcampDto } from "./dto/create-bootcamp.dto";
 import { UpdateBootcampDto } from "./dto/update-bootcamp.dto";
-import { batch, program_apply_progress } from "models/bootcampSchema";
+import {
+  batch,
+  program_apply,
+  program_apply_progress,
+} from "models/bootcampSchema";
 import { Sequelize } from "sequelize-typescript";
 import messageHelper from "src/messagehelper/message";
 import { where } from "sequelize";
@@ -39,9 +43,9 @@ export class BootcampService {
       });
 
       await Promise.all(promises);
-      if (result.length == 0) {
-        throw new Error("Kosong");
-      }
+      // if (result.length == 0) {
+      //   throw new Error("Kosong");
+      // }
       return messageHelper(result, 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
@@ -74,9 +78,9 @@ export class BootcampService {
       });
 
       await Promise.all(promises);
-      if (result.length == 0) {
-        throw new Error("Kosong");
-      }
+      // if (result.length == 0) {
+      //   throw new Error("Kosong");
+      // }
       return messageHelper(result, 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
@@ -88,13 +92,29 @@ export class BootcampService {
       const data = await this.sequelize.query(
         `SELECT * FROM bootcamp.appbatchmembers where batch_id = ${id}`
       );
-      if (data[0].length == 0) {
-        throw new Error("Kosong");
-      }
+      // if (data[0].length == 0) {
+      //   throw new Error("Kosong");
+      // }
       console.log(data[0]);
       return data[0];
       // return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {}
+  }
+
+  async GetTraineeById(batch: any, id: any) {
+    try {
+      const result = await this.sequelize.query(
+        `SELECT * FROM bootcamp.appbatchmembers where batch_id = ${batch} AND trainee_id = ${id}`
+      );
+      // if (data[0].length == 0) {
+      //   throw new Error("Kosong");
+      // }
+      console.log(result[0]);
+      // return result[0];
+      return messageHelper(result[0], 200, "Berhasil");
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
   }
 
   async GetProgName() {
@@ -102,9 +122,9 @@ export class BootcampService {
       const data = await this.sequelize.query(
         "SELECT prog_entity_id,prog_title, prog_type from curriculum.program_entity"
       );
-      if (data[0].length == 0) {
-        throw new Error("Kosong");
-      }
+      // if (data[0].length == 0) {
+      //   throw new Error("Kosong");
+      // }
       return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal!");
@@ -116,9 +136,9 @@ export class BootcampService {
       const data = await this.sequelize.query(
         "SELECT * from bootcamp.view_trainer"
       );
-      if (data[0].length == 0) {
-        throw new Error("Kosong]");
-      }
+      // if (data[0].length == 0) {
+      //   throw new Error("Kosong]");
+      // }
       return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal!");
@@ -130,9 +150,9 @@ export class BootcampService {
       const data = await this.sequelize.query(
         "SELECT * FROM bootcamp.view_orang_create_batch"
       );
-      if (data[0].length == 0) {
-        throw new Error("Kosong");
-      }
+      // if (data[0].length == 0) {
+      //   throw new Error("Kosong");
+      // }
       return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
@@ -144,9 +164,9 @@ export class BootcampService {
       const data = await this.sequelize.query(
         "SELECT * FROM bootcamp.OrangApply"
       );
-      if (data[0].length == 0) {
-        throw new Error("Kosong");
-      }
+      // if (data[0].length == 0) {
+      //   throw new Error("Kosong");
+      // }
       return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
@@ -158,9 +178,9 @@ export class BootcampService {
       const data = await this.sequelize.query(
         "SELECT * FROM bootcamp.orangfiltering"
       );
-      if (data[0].length == 0) {
-        throw new Error("Kosong");
-      }
+      // if (data[0].length == 0) {
+      //   throw new Error("Kosong");
+      // }
       return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "GAGAL");
@@ -172,9 +192,20 @@ export class BootcampService {
       const data = await this.sequelize.query(
         "SELECT * FROM bootcamp.orangcontract"
       );
-      if (data[0].length == 0) {
-        throw new Error("Kosong]");
-      }
+      // if (data[0].length == 0) {
+      //   throw new Error("Kosong");
+      // }
+      return messageHelper(data[0], 200, "Berhasil");
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async GetOrangDisqualified() {
+    try {
+      const data = await this.sequelize.query(
+        "select * from bootcamp.OrangDisqualified"
+      );
       return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
@@ -186,9 +217,9 @@ export class BootcampService {
       const data = await this.sequelize.query(
         "SELECT * FROM bootcamp.orangnotresponding"
       );
-      if (data[0].length == 0) {
-        throw new Error("Kosong]");
-      }
+      // if (data[0].length == 0) {
+      //   throw new Error("Kosong");
+      // }
       return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
@@ -199,11 +230,11 @@ export class BootcampService {
   async PostCreateBatch(data: any) {
     try {
       //batchnya
-      const data1: any[] = [data.batch];
+      const batch: any[] = [data.batch];
 
       //trainee nya
-      const batchTrainees: any = data.batchTrainees;
-      const data2: any[] = batchTrainees.map((traineeId) => {
+      const data2: any = data.batchTrainees;
+      const batchTrainees: any[] = data2.map((traineeId) => {
         return {
           batr_status: "selected",
           batr_access_token: "access_token",
@@ -213,15 +244,21 @@ export class BootcampService {
       });
 
       //trainernya
-      const trainerPrograms: any = data.trainerPrograms;
-      const data3: any[] = trainerPrograms.map((trainerId) => {
+      const data3: any = data.trainerPrograms;
+      const trainerPrograms: any[] = data3.map((trainerId) => {
         return {
           tpro_entity_id: data.batch.batch_entity_id,
           tpro_emp_entity_id: trainerId,
         };
       });
-      console.log(data1, data2, data3);
-      return { data1, data2, data3 };
+
+      const query = `CALL bootcamp.createBatch('${JSON.stringify(
+        batch
+      )}', '${JSON.stringify(batchTrainees)}', '${JSON.stringify(
+        trainerPrograms
+      )}')`;
+      const result = await this.sequelize.query(query);
+      return result;
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal Create");
     }
@@ -230,11 +267,167 @@ export class BootcampService {
   async UpdateCandidateStatusApply(data: any) {
     //update candidate ke status filtering
     try {
-      const result = await program_apply_progress.update(
-        { parog_progress_name: data.prog_name, parog_status: "ready test" },
+      const data1 = await program_apply_progress.update(
+        { parog_progress_name: data.prog_name, parog_status: "wait" },
         { where: { parog_user_entity_id: data.user } }
       );
+      return messageHelper(data1, 200, "Berhasil");
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async UpdateCandidateStatusFiltering(data: any) {
+    try {
+      const result = await this.sequelize.transaction(async (t) => {
+        const data1 = await program_apply.update(
+          {
+            prap_test_score: data.test_score,
+            prap_status: data.prap_status,
+            prap_review: data.review,
+          },
+          {
+            where: { prap_user_entity_id: data.user_entity_id },
+            transaction: t,
+          }
+        );
+        const data2 = await program_apply_progress.update(
+          { parog_progress_name: data.progress_name },
+          {
+            where: { parog_user_entity_id: data.user_entity_id },
+            transaction: t,
+          }
+        );
+        return { data1, data2 };
+      });
+      console.log(result);
+      return result;
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async UpdateCandidateStatusContract(data: any) {
+    try {
+      const result = await program_apply_progress.update(
+        { parog_progress_name: data.progress_name, parog_status: "wait" },
+        {
+          where: {
+            parog_user_entity_id: data.user_entity_id,
+          },
+        }
+      );
+      return result;
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async UpdateCandidateStatusDisqualified(data: any) {
+    try {
+      const result = await this.sequelize.transaction(async (t) => {
+        const data1 = await program_apply_progress.update(
+          {
+            parog_progress_name: data.progress_name,
+          },
+          {
+            where: {
+              parog_user_entity_id: data.user_entity_id,
+            },
+            transaction: t,
+          }
+        );
+        const data2 = await program_apply.update(
+          {
+            prap_status: data.prap_status,
+          },
+          {
+            where: {
+              prap_user_entity_id: data.user_entity_id,
+            },
+            transaction: t,
+          }
+        );
+
+        return { data1, data2 };
+      });
+      return messageHelper(result, 200, "Berhasil");
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async UpdateCandidateStatusNotResponding(data: any) {
+    try {
+      const result = await this.sequelize.transaction(async (t) => {
+        const data1 = await program_apply_progress.update(
+          {
+            parog_progress_name: data.progress_name,
+          },
+          {
+            where: {
+              parog_user_entity_id: data.user_entity_id,
+            },
+            transaction: t,
+          }
+        );
+        const data2 = await program_apply.update(
+          {
+            prap_status: data.prap_status,
+          },
+          {
+            where: {
+              prap_user_entity_id: data.user_entity_id,
+            },
+            transaction: t,
+          }
+        );
+
+        return { data1, data2 };
+      });
+      return messageHelper(result, 200, "Berhasil");
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async PostSetBatchToRunning(data: any) {
+    try {
+      console.log(data);
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async PostSetBatchToClose(data: any) {
+    try {
+      console.log(data);
       return data;
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async PostDeleteBatch(data: any) {
+    try {
+      console.log(data);
+      return data;
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async PostEvaluationDetail(data: any) {
+    try {
+      // const result =
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async PostEditStatusEvaluation(data: any) {
+    try {
+      console.log(data);
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
     }

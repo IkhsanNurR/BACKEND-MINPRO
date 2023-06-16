@@ -15,11 +15,6 @@ import { UpdateBootcampDto } from "./dto/update-bootcamp.dto";
 export class BootcampController {
   constructor(private readonly bootcampService: BootcampService) {}
 
-  @Post()
-  create(@Body() createBootcampDto: CreateBootcampDto) {
-    return this.bootcampService.create(createBootcampDto);
-  }
-
   //get semua
   @Get()
   FindAllBatch() {
@@ -34,6 +29,11 @@ export class BootcampController {
   @Get("members/:id")
   FindMembersBatchById(@Param("id") id: number) {
     return this.bootcampService.GetAppBatchMembers(+id);
+  }
+
+  @Get("trainee/:batch/:id")
+  FindTraineeById(@Param("batch") batch: any, @Param("id") id: any) {
+    return this.bootcampService.GetTraineeById(+batch, +id);
   }
 
   @Get("progname")
@@ -66,6 +66,11 @@ export class BootcampController {
     return this.bootcampService.GetOrangContract();
   }
 
+  @Get("orangdisqualified")
+  FindOrangDisqualified() {
+    return this.bootcampService.GetOrangDisqualified();
+  }
+
   @Get("orangnotresponding")
   FindOrangNotResponding() {
     return this.bootcampService.GetOrangNotResponding();
@@ -77,19 +82,64 @@ export class BootcampController {
   }
 
   //post
+  //batch
   @Post("createbatch")
   async PostCreateBatch(@Body() data: any): Promise<any> {
     return await this.bootcampService.PostCreateBatch(data);
   }
 
+  @Patch("settorunning")
+  async PostSetToRunningBatch(@Body() data: any): Promise<any> {
+    return await this.bootcampService.PostSetBatchToRunning(data);
+  }
+
+  @Patch("closebatch")
+  async PostSetToCloseBatch(@Body() data: any): Promise<any> {
+    return await this.bootcampService.PostSetBatchToClose(
+      parseInt(data.batch_id)
+    );
+  }
+
+  @Patch("deletebatch")
+  async PostDeleteBatch(@Body() data: any): Promise<any> {
+    return await this.bootcampService.PostDeleteBatch(data);
+  }
+
+  @Patch("evaluation/evaluationdetail")
+  async PostEvaluationDetail(@Body() data: any): Promise<any> {
+    return this.bootcampService.PostEvaluationDetail(data);
+  }
+
+  @Patch("evaluation/editstatusevaluation")
+  async PostEditStatusEvaluation(@Body() data: any): Promise<any> {
+    return this.bootcampService.PostEditStatusEvaluation(data);
+  }
+
+  //candidate
   @Patch("updatestatusapply")
   async PostUpdateStatusApply(@Body() data: any) {
     return await this.bootcampService.UpdateCandidateStatusApply(data);
   }
-  // @Get(":id")
-  // findOne(@Param("id") id: string) {
-  //   return this.bootcampService.findOne(+id);
-  // }
+
+  @Patch("updatecandidatefiltering")
+  async PostUpdateCandidateFiltering(@Body() data: any) {
+    return await this.bootcampService.UpdateCandidateStatusFiltering(data);
+  }
+
+  @Patch("updatecandidatecontract")
+  async PostUpdateCandidateContracted(@Body() data: any) {
+    return await this.bootcampService.UpdateCandidateStatusContract(data);
+  }
+
+  @Patch("updatecandidatedisqualified")
+  async PostUpdateCandidateDisqualified(@Body() data: any) {
+    return await this.bootcampService.UpdateCandidateStatusDisqualified(data);
+  }
+
+  @Patch("updatecandidatenotresponding")
+  async PostUpdateCandidateNotResponding(@Body() data: any) {
+    return await this.bootcampService.UpdateCandidateStatusNotResponding(data);
+  }
 
   @Patch(":id")
   update(
