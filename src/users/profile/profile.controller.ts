@@ -109,6 +109,36 @@ export class ProfileController {
     return this.profileService.deleteAddress(+id)
   }
 
+  @Post('/addEducation/:id')
+  addEducation(@Param('id') id: number, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.profileService.addEducation(+id, updateProfileDto)
+  }
+
+  @Patch('/editEducation/:id')
+  editEducation(@Param('id') id: number, @Body() updateProfilDto: UpdateProfileDto) {
+    return this.profileService.editEducation(+id, updateProfilDto)
+  }
+
+  @Delete('/deleteEducation/:id')
+  deleteEducation(@Param('id') id: number) {
+    return this.profileService.deleteEducation(+id)
+  }
+
+  @Post('/addExperiences/:id')
+  addExperiences(@Param('id') id: number, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.profileService.addExperiences(+id, updateProfileDto)
+  }
+
+  @Patch('/editExperience/:id')
+  editExperience(@Param('id') id: number, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.profileService.editExperiences(+id, updateProfileDto)
+  }
+
+  @Delete('/deleteExperience/:id')
+  deleteExperience(@Param('id') id: number) {
+    return this.profileService.deleteExperience(+id)
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.profileService.findOne(+id);

@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { phone_number_type, users, users_address, users_email, users_phones } from 'models/usersSchema';
+import { phone_number_type, users, users_address, users_education, users_email, users_experiences, users_phones } from 'models/usersSchema';
 import * as bcrypt from 'bcrypt'
 import * as fs from 'fs'
 import { Sequelize } from 'sequelize-typescript';
+
+function isStartDateBeforeEndDate(startDate: Date, endDate: Date): boolean {
+  return startDate < endDate;
+}
 
 @Injectable()
 export class ProfileService {
@@ -14,7 +18,9 @@ export class ProfileService {
     @InjectModel(users_email) private readonly UserEmail: typeof users_email,
     @InjectModel(users_phones) private readonly UserPhone: typeof users_phones,
     @InjectModel(phone_number_type) private readonly PhoneType: typeof phone_number_type,
-    @InjectModel(users_address) private readonly UserAddress: typeof users_address
+    @InjectModel(users_address) private readonly UserAddress: typeof users_address,
+    @InjectModel(users_education) private readonly UserEducation: typeof users_education,
+    @InjectModel(users_experiences) private readonly UserExperiences: typeof users_experiences
   ) { }
 
   async editProfile(id: number, updateProfileDto: UpdateProfileDto, file?: Express.Multer.File) {
@@ -266,6 +272,175 @@ export class ProfileService {
       return error.message
     }
   }
+
+  async addEducation(id: number, updateProfileDto: UpdateProfileDto) {
+    try {
+
+      const startDate = new Date(updateProfileDto.newStartDate);
+      const endDate = new Date(updateProfileDto.newEndDate);
+
+      if (!isStartDateBeforeEndDate(startDate, endDate)) {
+        return {
+          status: 400,
+          message: "Start date must be before the end date",
+        };
+      }
+
+      const graduateYear = endDate.getFullYear()
+      const res = await this.UserEducation.create({
+        usdu_entity_id: id,
+        usdu_school: updateProfileDto.newSchool,
+        usdu_degree: updateProfileDto.newDegree,
+        usdu_field_study: updateProfileDto.newFieldStudy,
+        usdu_graduate_year: graduateYear.toString(),
+        usdu_start_date: updateProfileDto.newStartDate,
+        usdu_end_date: updateProfileDto.newEndDate,
+        usdu_grade: updateProfileDto.newGrade,
+        usdu_activities: updateProfileDto.newActivitis,
+        usdu_description: updateProfileDto.newDescription
+      })
+      return {
+        data: res,
+        status: 200,
+        message: "sukses"
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async editEducation(id: number, updateProfileDto: UpdateProfileDto) {
+    try {
+      const graduateYear = new Date(updateProfileDto.newEndDate).getFullYear()
+      const res = await this.UserEducation.update({
+        usdu_school: updateProfileDto.newSchool,
+        usdu_degree: updateProfileDto.newDegree,
+        usdu_field_study: updateProfileDto.newFieldStudy,
+        usdu_graduate_year: graduateYear.toString(),
+        usdu_start_date: updateProfileDto.newStartDate,
+        usdu_end_date: updateProfileDto.newEndDate,
+        usdu_grade: updateProfileDto.newGrade,
+        usdu_activities: updateProfileDto.newActivitis,
+        usdu_description: updateProfileDto.newDescription
+      }, {
+        where: {
+          usdu_id: id
+        }
+      })
+      return {
+        data: res,
+        status: 200,
+        message: "Edit sukses"
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async deleteEducation(id: number) {
+    try {
+      await this.UserEducation.destroy({
+        where: {
+          usdu_id: id
+        }
+      })
+      return {
+        message: "sukses",
+        status: 200
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async addExperiences(id: number, updateProfileDto: UpdateProfileDto) {
+    try {
+      const startDate = new Date(updateProfileDto.newStartDate);
+      const endDate = new Date(updateProfileDto.newEndDate);
+
+      if (!isStartDateBeforeEndDate(startDate, endDate)) {
+        return {
+          status: 400,
+          message: "Start date must be before the end date",
+        };
+      }
+      const res = await this.UserExperiences.create({
+        usex_entity_id: id,
+        usex_title: updateProfileDto.newTitle,
+        usex_profile_headline: updateProfileDto.newHeadline,
+        usex_company_name: updateProfileDto.newCompany,
+        usex_city_id: updateProfileDto.newCity,
+        usex_start_date: updateProfileDto.newStartDate,
+        usex_end_date: updateProfileDto.newEndDate,
+        usex_industry: updateProfileDto.newIndustry,
+        usex_employment_type: updateProfileDto.newEmployeType,
+        usex_description: updateProfileDto.newDescription,
+        usex_experience_type: updateProfileDto.newExperienceType
+      })
+      return {
+        data: res,
+        message: "sukses",
+        status: 200
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async editExperiences(id: number, updateProfileDto: UpdateProfileDto) {
+    try {
+      const startDate = new Date(updateProfileDto.newStartDate);
+      const endDate = new Date(updateProfileDto.newEndDate);
+
+      if (!isStartDateBeforeEndDate(startDate, endDate)) {
+        return {
+          status: 400,
+          message: "Start date must be before the end date",
+        };
+      }
+      const res = await this.UserExperiences.update({
+        usex_title: updateProfileDto.newTitle,
+        usex_profile_headline: updateProfileDto.newHeadline,
+        usex_company_name: updateProfileDto.newCompany,
+        usex_city_id: updateProfileDto.newCity,
+        usex_start_date: updateProfileDto.newStartDate,
+        usex_end_date: updateProfileDto.newEndDate,
+        usex_industry: updateProfileDto.newIndustry,
+        usex_employment_type: updateProfileDto.newEmployeType,
+        usex_description: updateProfileDto.newDescription,
+        usex_experience_type: updateProfileDto.newExperienceType
+      }, {
+        where: {
+          usex_id: id
+        }
+      })
+      return {
+        data: res,
+        message: "sukses",
+        status: 200
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async deleteExperience(id: number) {
+    try {
+      await this.UserExperiences.destroy({
+        where: {
+          usex_id: id
+        }
+      })
+      return {
+        message: "sukses",
+        status: 200
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
+
+
 
   async getPontyCode(): Promise<any> {
     try {

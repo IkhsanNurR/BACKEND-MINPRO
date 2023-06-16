@@ -14,8 +14,8 @@ export interface users_experiencesAttributes {
     usex_end_date?: Date;
     usex_industry?: string;
     usex_description?: string;
-    usex_experience_type?: string;
     usex_employment_type?: string;
+    usex_experience_type?: string;
 }
 
 @Table({
@@ -48,11 +48,6 @@ export class users_experiences extends Model<users_experiencesAttributes, users_
     })
     @Index({
     	name: "users_experiences_pkey",
-    	using: "btree",
-    	unique: true 
-    })
-    @Index({
-    	name: "users_experiences_usex_entity_id_key",
     	using: "btree",
     	unique: true 
     })
@@ -116,12 +111,12 @@ export class users_experiences extends Model<users_experiencesAttributes, users_
     	allowNull: true,
     	type: DataType.STRING(15) 
     })
-    	usex_experience_type?: string;
+    	usex_employment_type?: string;
 
     @Column({
     	allowNull: true,
     	type: DataType.STRING(15) 
     })
-    	usex_employment_type?: string;
+    	usex_experience_type?: string;
 
 }

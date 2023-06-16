@@ -12,4 +12,19 @@ export class UpdateProfileDto extends PartialType(CreateProfileDto) {
     newAddressPostalCode?: string
     newAddressCityId?: number
     newAddressTypeId?: number
+    newSchool?: string
+    newDegree?: string
+    newFieldStudy?: string
+    newStartDate?: Date
+    newEndDate?: Date
+    newGrade?: string
+    newActivitis?: string
+    newDescription?: string
+    newTitle?: string
+    newHeadline?: string
+    newCompany: string
+    newCity?: number
+    newIndustry?: string
+    newEmployeType?: string
+    newExperienceType?: string
 }
