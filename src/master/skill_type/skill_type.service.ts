@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSkillTypeDto } from './dto/create-skill_type.dto';
 import { UpdateSkillTypeDto } from './dto/update-skill_type.dto';
+import { skill_type } from 'models/masterSchema';
 
 @Injectable()
 export class SkillTypeService {
@@ -8,8 +9,17 @@ export class SkillTypeService {
     return 'This action adds a new skillType';
   }
 
-  findAll() {
-    return `This action returns all skillType`;
+  async findAll() {
+    try {
+      const result = await skill_type.findAll()
+      return {
+        data: result,
+        message: 'sukses',
+        status: 200
+      }
+    } catch (e) {
+      return e.message
+    }
   }
 
   findOne(id: number) {

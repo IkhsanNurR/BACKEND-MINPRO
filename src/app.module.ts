@@ -13,6 +13,7 @@ import { CityModule } from './master/city/city.module';
 import { AddressTypeModule } from './master/address_type/address_type.module';
 import { SkillTypeModule } from './master/skill_type/skill_type.module';
 import { AddressModule } from './master/address/address.module';
+import { skill_type } from 'models/masterSchema';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { AddressModule } from './master/address/address.module';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [],
+      models: [skill_type],
       autoLoadModels: true,
       synchronize: true
     }),
