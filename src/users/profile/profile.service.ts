@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { phone_number_type, users, users_address, users_education, users_email, users_experiences, users_phones } from 'models/usersSchema';
+import { phone_number_type, users, users_address, users_education, users_email, users_experiences, users_phones, users_skill } from 'models/usersSchema';
 import * as bcrypt from 'bcrypt'
 import * as fs from 'fs'
 import { Sequelize } from 'sequelize-typescript';
@@ -20,7 +20,8 @@ export class ProfileService {
     @InjectModel(phone_number_type) private readonly PhoneType: typeof phone_number_type,
     @InjectModel(users_address) private readonly UserAddress: typeof users_address,
     @InjectModel(users_education) private readonly UserEducation: typeof users_education,
-    @InjectModel(users_experiences) private readonly UserExperiences: typeof users_experiences
+    @InjectModel(users_experiences) private readonly UserExperiences: typeof users_experiences,
+    @InjectModel(users_skill) private readonly UserSkill: typeof users_skill
   ) { }
 
   async editProfile(id: number, updateProfileDto: UpdateProfileDto, file?: Express.Multer.File) {
@@ -440,7 +441,37 @@ export class ProfileService {
     }
   }
 
+  async addSkill(id: number, updateProfilDto: UpdateProfileDto) {
+    try {
+      const res = await this.UserSkill.create({
+        uski_entity_id: id,
+        uski_skty_name: updateProfilDto.newSkill
+      })
+      return {
+        data: res,
+        status: 200,
+        message: "sukses"
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
 
+  async deleteSkill(id: number) {
+    try {
+       await this.UserSkill.destroy({
+        where: {
+          uski_id: id
+        }
+      })
+      return {
+        status: 200,
+        message: "sukses"
+      }
+    } catch (error) {
+      return error.message
+    }
+  }
 
   async getPontyCode(): Promise<any> {
     try {

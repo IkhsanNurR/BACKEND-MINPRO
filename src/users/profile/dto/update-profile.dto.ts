@@ -27,4 +27,5 @@ export class UpdateProfileDto extends PartialType(CreateProfileDto) {
     newIndustry?: string
     newEmployeType?: string
     newExperienceType?: string
+    newSkill?: string
 }

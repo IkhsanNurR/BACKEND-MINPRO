@@ -17,7 +17,7 @@ export class UsersService {
       let phoneCode = 'Cell'
       createUserDto.uspo_ponty_code = phoneCode
 
-      let role = 5
+      let role = 2
       createUserDto.usro_role_id = role
 
       let passHash = await bcrypt.hash(createUserDto.user_password, 10)

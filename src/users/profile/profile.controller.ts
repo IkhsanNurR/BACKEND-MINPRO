@@ -1,4 +1,4 @@
-import { Controller, Body, Patch, Param, ParseFilePipeBuilder, HttpStatus, UseInterceptors, UploadedFile, Get, Post, Delete, ValidationError, ParseFilePipe, FileTypeValidator } from '@nestjs/common';
+import { Controller, Body, Patch, Param, UseInterceptors, UploadedFile, Get, Post, Delete, ParseFilePipe, FileTypeValidator } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { diskStorage } from 'multer';
@@ -137,6 +137,16 @@ export class ProfileController {
   @Delete('/deleteExperience/:id')
   deleteExperience(@Param('id') id: number) {
     return this.profileService.deleteExperience(+id)
+  }
+
+  @Post('/addSkill/:id')
+  addSkill(@Param('id') id: number, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.profileService.addSkill(+id, updateProfileDto)
+  }
+
+  @Delete('/deleteSkill/:id')
+  deleteSkill(@Param('id') id: number) {
+    return this.profileService.deleteSkill(+id)
   }
 
   @Get(':id')
