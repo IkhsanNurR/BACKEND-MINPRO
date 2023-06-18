@@ -3,12 +3,13 @@ import { CreateBootcampDto } from "./dto/create-bootcamp.dto";
 import { UpdateBootcampDto } from "./dto/update-bootcamp.dto";
 import {
   batch,
+  batch_trainee,
   program_apply,
   program_apply_progress,
 } from "models/bootcampSchema";
 import { Sequelize } from "sequelize-typescript";
 import messageHelper from "src/messagehelper/message";
-import { where } from "sequelize";
+import { v4 as uuidv4 } from "uuid";
 
 @Injectable()
 export class BootcampService {
@@ -95,7 +96,6 @@ export class BootcampService {
       // if (data[0].length == 0) {
       //   throw new Error("Kosong");
       // }
-      console.log(data[0]);
       return data[0];
       // return messageHelper(data[0], 200, "Berhasil");
     } catch (error) {}
@@ -109,7 +109,6 @@ export class BootcampService {
       // if (data[0].length == 0) {
       //   throw new Error("Kosong");
       // }
-      console.log(result[0]);
       // return result[0];
       return messageHelper(result[0], 200, "Berhasil");
     } catch (error) {
@@ -237,8 +236,8 @@ export class BootcampService {
       const batchTrainees: any[] = data2.map((traineeId) => {
         return {
           batr_status: "selected",
-          batr_access_token: "access_token",
-          batr_access_grant: "0",
+          // batr_access_token: "access_token",
+          // batr_access_grant: "0",
           batr_trainee_entity_id: traineeId,
         };
       });
@@ -258,9 +257,203 @@ export class BootcampService {
         trainerPrograms
       )}')`;
       const result = await this.sequelize.query(query);
-      return result;
+      return messageHelper(
+        "Sukses",
+        201,
+        `Berhasil Create Batch ${data.batch.batch_name}`
+      );
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal Create");
+    }
+  }
+
+  async PostEditBatch(data: any) {
+    try {
+      const batch = data.batch;
+      const batch_trainees = data.batchTrainees;
+      const trainerPrograms = data.trainerPrograms;
+      const traineeBefore = await batch_trainee.findAll({
+        where: { batr_batch_id: batch.batch_id },
+      });
+      const oldIds = traineeBefore.map((id) => id.batr_trainee_entity_id);
+      const addedIds = batch_trainees.filter((id) => !oldIds.includes(id));
+      const deletedIds = oldIds.filter((id) => !batch_trainees.includes(id));
+      const added = addedIds.map((id) => ({
+        batr_status: "selected",
+        batr_trainee_entity_id: id,
+      }));
+      const deleted = deletedIds.map((id) => ({
+        batr_trainee_entity_id: id,
+      }));
+      const trainernya = trainerPrograms.map((id) => ({
+        tpro_entity_id: batch.batch_entity_id,
+        tpro_emp_entity_id: id,
+      }));
+      const addedTrainee = JSON.stringify(added);
+      const deletedTrainee = JSON.stringify(deleted);
+      const trainer = JSON.stringify(trainernya);
+      console.log(addedTrainee, deletedTrainee, trainer);
+      const query = `CALL bootcamp.update_batch(:batch_id, :entity_id, :batch_name, :batch_desc, :start_date, :end_date, :batch_type, :pic_id, :addedTrainee, :deletedTrainee, :trainer)`;
+      const result = await this.sequelize.query(query, {
+        replacements: {
+          batch_id: batch.batch_id,
+          entity_id: batch.batch_entity_id,
+          batch_name: batch.batch_name,
+          batch_desc: batch.batch_description,
+          start_date: batch.batch_start_date,
+          end_date: batch.batch_end_date,
+          batch_type: batch.batch_type,
+          pic_id: batch.batch_pic_id,
+          addedTrainee: addedTrainee,
+          deletedTrainee: deletedTrainee,
+          trainer: trainer,
+        },
+      });
+      return messageHelper("Berhasil Update", 201, `${batch.batch_name}`);
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal Update");
+    }
+  }
+
+  async PostSetBatchToRunning(data: any) {
+    try {
+      const batch_id = parseInt(data.batch_id);
+      const batch_status = data.status;
+      const batch_name = data.batch_name;
+      const batch_entity_id = data.batch_entity_id;
+      const member = data.member;
+      const tanggal = new Date();
+      const tanggalrunning = tanggal.toISOString().slice(0, 10);
+      const batchTrainees: any[] = member.map((traineeId) => {
+        return {
+          batr_access_token: uuidv4(),
+          batr_access_grant: "1",
+          batr_trainee_entity_id: +traineeId,
+        };
+      });
+      const trainee = JSON.stringify(batchTrainees);
+      const query = `CALL bootcamp.setbatchrunning(:batch_id, :batch_status, :batch_entity_id, :start_date, :trainee)`;
+      console.log(query);
+      const result = await this.sequelize.query(query, {
+        replacements: {
+          batch_id: batch_id,
+          batch_status: batch_status,
+          batch_entity_id: batch_entity_id,
+          start_date: tanggalrunning,
+          trainee: trainee,
+        },
+      });
+      return messageHelper(
+        "Sukses!",
+        201,
+        `Berhasil Running Batch dengan nama ${batch_name}`
+      );
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async PostSetBatchToClose(data: any) {
+    try {
+      const batch_id = data.batch_id;
+      const batch_status = data.batch_status;
+      const tanggal = new Date();
+      const batch_name = data.batch_name;
+      const tanggalClose = tanggal.toISOString().slice(0, 10);
+      const batchTrainees: any[] = data.batchTrainees.map((datanya) => {
+        return {
+          talent_fullname: datanya.talent_fullname,
+          talent_user_entity_id: datanya.talent_user_entity_id,
+          talent_technology: datanya.talent_technology,
+          talent_start_date: datanya.talent_start_date,
+          talent_end_date: datanya.talent_end_date,
+          talent_trainer: datanya.talent_trainer,
+          talent_skill: datanya.talent_skill ? datanya.talent_skill : "",
+          talent_status: "idle",
+        };
+      });
+      const membernya = JSON.stringify(batchTrainees);
+      const query = `CALL bootcamp.closeBatch(:batch_id, :batch_status, :tanggal_end, :trainer)`;
+      const result = await this.sequelize.query(query, {
+        replacements: {
+          batch_id: batch_id,
+          batch_status: batch_status,
+          tanggal_end: tanggalClose,
+          trainer: membernya,
+        },
+      });
+      console.log("datanya 2", batch_id, batch_status, membernya);
+      return messageHelper(
+        "Sukses",
+        201,
+        `Berhasil Closed Batch dengan nama ${batch_name}`
+      );
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async PostDeleteBatch(data: any) {
+    try {
+      const batch_id = data.batch_id;
+      const batch_status = "cancelled";
+      const batchTrainees: any[] = data.member.map((idnya) => {
+        return {
+          batr_trainee_entity_id: idnya,
+        };
+      });
+      const membernya = JSON.stringify(batchTrainees);
+      const query = `CALL bootcamp.deleteBatch(:batch_id, :batch_status, :trainer)`;
+      const result = await this.sequelize.query(query, {
+        replacements: {
+          batch_id: batch_id,
+          batch_status: batch_status,
+          trainer: membernya,
+        },
+      });
+      console.log("idnya", batch_id);
+      console.log("orangnya", membernya);
+      console.log("statusnya", batch_status);
+      return messageHelper(
+        "Sukses!",
+        201,
+        `Berhasil delete Batch dengan id ${batch_id}`
+      );
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async PostExtendBatch(data: any) {
+    try {
+      console.log(data);
+      const result = await batch.update(
+        { batch_end_date: data.batch_end_date, batch_status: "extend" },
+        { where: { batch_id: +data.batch_id } }
+      );
+      return messageHelper(
+        "Sukses!",
+        201,
+        `Berhasil extend ${data.batch_name} ke ${data.formattedDate}`
+      );
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async PostEvaluationDetail(data: any) {
+    try {
+      // const result =
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async PostEditStatusEvaluation(data: any) {
+    try {
+      console.log(data);
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
     }
   }
 
@@ -386,48 +579,6 @@ export class BootcampService {
         return { data1, data2 };
       });
       return messageHelper(result, 200, "Berhasil");
-    } catch (error) {
-      return messageHelper(error.message, 400, "Gagal");
-    }
-  }
-
-  async PostSetBatchToRunning(data: any) {
-    try {
-      console.log(data);
-    } catch (error) {
-      return messageHelper(error.message, 400, "Gagal");
-    }
-  }
-
-  async PostSetBatchToClose(data: any) {
-    try {
-      console.log(data);
-      return data;
-    } catch (error) {
-      return messageHelper(error.message, 400, "Gagal");
-    }
-  }
-
-  async PostDeleteBatch(data: any) {
-    try {
-      console.log(data);
-      return data;
-    } catch (error) {
-      return messageHelper(error.message, 400, "Gagal");
-    }
-  }
-
-  async PostEvaluationDetail(data: any) {
-    try {
-      // const result =
-    } catch (error) {
-      return messageHelper(error.message, 400, "Gagal");
-    }
-  }
-
-  async PostEditStatusEvaluation(data: any) {
-    try {
-      console.log(data);
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
     }

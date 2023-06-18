@@ -88,6 +88,11 @@ export class BootcampController {
     return await this.bootcampService.PostCreateBatch(data);
   }
 
+  @Patch("editbatch")
+  async PostEditBatch(@Body() data: any): Promise<any> {
+    return await this.bootcampService.PostEditBatch(data);
+  }
+
   @Patch("settorunning")
   async PostSetToRunningBatch(@Body() data: any): Promise<any> {
     return await this.bootcampService.PostSetBatchToRunning(data);
@@ -95,14 +100,17 @@ export class BootcampController {
 
   @Patch("closebatch")
   async PostSetToCloseBatch(@Body() data: any): Promise<any> {
-    return await this.bootcampService.PostSetBatchToClose(
-      parseInt(data.batch_id)
-    );
+    return await this.bootcampService.PostSetBatchToClose(data);
   }
 
   @Patch("deletebatch")
   async PostDeleteBatch(@Body() data: any): Promise<any> {
     return await this.bootcampService.PostDeleteBatch(data);
+  }
+
+  @Patch("extendbatch")
+  async PostExtendBatch(@Body() data: any): Promise<any> {
+    return await this.bootcampService.PostExtendBatch(data);
   }
 
   @Patch("evaluation/evaluationdetail")
