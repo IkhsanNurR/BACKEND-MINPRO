@@ -6,10 +6,45 @@ import {
   Patch,
   Param,
   Delete,
+  HttpException,
+  UseInterceptors,
+  UploadedFile,
+  UploadedFiles,
 } from "@nestjs/common";
 import { BootcampService } from "./bootcamp.service";
-import { CreateBootcampDto } from "./dto/create-bootcamp.dto";
-import { UpdateBootcampDto } from "./dto/update-bootcamp.dto";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
+import { diskStorage } from "multer";
+import messageHelper from "src/messagehelper/message";
+import * as fse from "fs-extra";
+import { Express } from "express";
+
+export function MultiFileInterceptorWithDest(destination: string) {
+  return FileFieldsInterceptor(
+    [
+      { name: "foto", maxCount: 1 },
+      { name: "cv", maxCount: 1 },
+    ],
+    {
+      storage: diskStorage({
+        destination: destination,
+        filename: (req, file, cb) => {
+          const firstname = req.body?.user_firstname;
+          const uniqueSuffix = file.originalname;
+          return cb(
+            null,
+            file.fieldname + "-" + firstname + "-" + uniqueSuffix
+          );
+        },
+      }),
+      fileFilter: (req, file, cb) => {
+        if (!file.originalname.match(/\.(jpg|jpeg|png|pdf|docx|doc)$/)) {
+          return cb(new HttpException("Invalid file type", 403), false);
+        }
+        cb(null, true);
+      },
+    }
+  );
+}
 
 @Controller("bootcamp")
 export class BootcampController {
@@ -82,6 +117,27 @@ export class BootcampController {
   }
 
   //post
+
+  @Post("applybatch")
+  @UseInterceptors(MultiFileInterceptorWithDest("./public/users"))
+  async createProduct(
+    @Body() createbatch: any,
+    @UploadedFiles() files: { [fieldname: string]: Express.Multer.File[] }
+  ): Promise<any> {
+    const images = [files.cv?.[0], files.foto?.[0]].filter(Boolean);
+    if (images.length < 2) {
+      for (let i = 0; i < images.length; i++) {
+        const imagePath = "./image/" + images[i].filename;
+        const exist = fse.existsSync(imagePath);
+        if (fse.existsSync(imagePath)) {
+          fse.remove(imagePath);
+        }
+      }
+      images.forEach((i) => {});
+      return messageHelper("2 Field file harus diisi semua ya!", 400, "Gagal!");
+    }
+    return this.bootcampService.ApplyBatch(images, createbatch);
+  }
   //batch
   @Post("createbatch")
   async PostCreateBatch(@Body() data: any): Promise<any> {
@@ -111,6 +167,11 @@ export class BootcampController {
   @Patch("extendbatch")
   async PostExtendBatch(@Body() data: any): Promise<any> {
     return await this.bootcampService.PostExtendBatch(data);
+  }
+
+  @Patch("pendingbatch")
+  async PostPendingBatch(@Body() data: any): Promise<any> {
+    return await this.bootcampService.PostPendingBatch(data);
   }
 
   @Patch("evaluation/evaluationdetail")
@@ -147,14 +208,6 @@ export class BootcampController {
   @Patch("updatecandidatenotresponding")
   async PostUpdateCandidateNotResponding(@Body() data: any) {
     return await this.bootcampService.UpdateCandidateStatusNotResponding(data);
-  }
-
-  @Patch(":id")
-  update(
-    @Param("id") id: string,
-    @Body() updateBootcampDto: UpdateBootcampDto
-  ) {
-    return this.bootcampService.update(+id, updateBootcampDto);
   }
 
   @Delete(":id")

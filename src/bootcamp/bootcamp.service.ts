@@ -1,6 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { CreateBootcampDto } from "./dto/create-bootcamp.dto";
-import { UpdateBootcampDto } from "./dto/update-bootcamp.dto";
 import {
   batch,
   batch_trainee,
@@ -14,9 +12,6 @@ import { v4 as uuidv4 } from "uuid";
 @Injectable()
 export class BootcampService {
   constructor(private readonly sequelize: Sequelize) {}
-  create(createBootcampDto: CreateBootcampDto) {
-    return "This action adds a new bootcamp";
-  }
 
   async AppBatchFindAll() {
     try {
@@ -226,6 +221,16 @@ export class BootcampService {
   }
 
   //post
+  async ApplyBatch(images: Express.Multer.File[], data: any) {
+    try {
+      console.log(data);
+      console.log(images);
+      return data;
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
   async PostCreateBatch(data: any) {
     try {
       //batchnya
@@ -397,27 +402,30 @@ export class BootcampService {
     try {
       const batch_id = data.batch_id;
       const batch_status = "cancelled";
+      const batch_reason = data.batch_reason;
+      const batch_name = data.batch_name;
       const batchTrainees: any[] = data.member.map((idnya) => {
         return {
           batr_trainee_entity_id: idnya,
         };
       });
       const membernya = JSON.stringify(batchTrainees);
-      const query = `CALL bootcamp.deleteBatch(:batch_id, :batch_status, :trainer)`;
+      const query = `CALL bootcamp.deleteBatch(:batch_id, :batch_status, :batch_reason, :trainee)`;
       const result = await this.sequelize.query(query, {
         replacements: {
           batch_id: batch_id,
           batch_status: batch_status,
-          trainer: membernya,
+          trainee: membernya,
         },
       });
       console.log("idnya", batch_id);
       console.log("orangnya", membernya);
       console.log("statusnya", batch_status);
+      console.log("reasonnya", batch_reason);
       return messageHelper(
         "Sukses!",
         201,
-        `Berhasil delete Batch dengan id ${batch_id}`
+        `Berhasil delete Batch ${batch_name}`
       );
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
@@ -428,7 +436,11 @@ export class BootcampService {
     try {
       console.log(data);
       const result = await batch.update(
-        { batch_end_date: data.batch_end_date, batch_status: "extend" },
+        {
+          batch_end_date: data.batch_end_date,
+          batch_status: "extend",
+          batch_reason: data.batch_reason,
+        },
         { where: { batch_id: +data.batch_id } }
       );
       return messageHelper(
@@ -441,9 +453,86 @@ export class BootcampService {
     }
   }
 
+  async PostPendingBatch(data: any) {
+    try {
+      console.log(data);
+      const result = await batch.update(
+        {
+          batch_start_date: data.batch_start_date,
+          batch_end_date: data.batch_end_date,
+          batch_status: data.batch_status,
+          batch_reason: data.batch_reason,
+        },
+        { where: { batch_id: +data.batch_id } }
+      );
+      return messageHelper(
+        "Sukses!",
+        201,
+        `Berhasil Pending Batch ${data.batch_name} ke ${data.formatted_start} - ${data.formatted_end} `
+      );
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
   async PostEvaluationDetail(data: any) {
     try {
-      // const result =
+      console.log(data);
+      const fullname = data.fullname;
+      const member = data.evaluation;
+      const batchTrainees = JSON.stringify(member);
+      console.log(batchTrainees);
+      // const query = `CALL bootcamp.createEvaluation(:total_score, :batch_id, :trainee_id, :batr_status, :trainee`
+      // const result = await this.sequelize.query(query, {
+      //     replacements: {
+      //       total_score : data.batr_total_score,
+      //       batch_id: data.batch_id,
+      //       trainee_id : data.trainee_id,
+      //       batr_status: data.batr_status,
+      //       trainee: data.evaluation
+      //     },
+      //   });
+      // const datanya: any = {
+      //   batr_total_score: 25,
+      //   batch_id: 5,
+      //   trainee_id: 26,
+      //   batr_status: "failed",
+      //   evaluation: [
+      //     { technical: { fundamental: 1, oop: 1, database: 1 } },
+      //     { softskill: { communication: 1, teamwork: 1, selfLearning: 1 } },
+      //     { presentation: { gerak: 1, nada: 1, pembawaan: 1 } },
+      //   ],
+      // };
+      // const result = [];
+      // data.evaluation.forEach((item) => {
+      //   const category = Object.keys(item)[0];
+      //   const skills = item[category];
+
+      //   if (category === "technical") {
+      //     Object.entries(skills).forEach(([section, value]) => {
+      //       const entry = {
+      //         btev_type: "hardskill",
+      //         btev_section: "technical",
+      //         btev_skill: section,
+      //         btev_skor: value,
+      //       };
+      //       result.push(entry);
+      //     });
+      //   } else {
+      //     Object.entries(skills).forEach(([section, value]) => {
+      //       const entry = {
+      //         btev_type: "softskill",
+      //         btev_section: category,
+      //         btev_skill: section,
+      //         btev_skor: value,
+      //       };
+      //       result.push(entry);
+      //     });
+      //   }
+      // });
+      // console.log(result);
+      // console.log(data.evaluation);
+      // console.log(data.evaluation[0].technical);
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
     }
@@ -586,10 +675,6 @@ export class BootcampService {
 
   findOne(id: number) {
     return `This action returns a #${id} bootcamp`;
-  }
-
-  update(id: number, updateBootcampDto: UpdateBootcampDto) {
-    return `This action updates a #${id} bootcamp`;
   }
 
   remove(id: number) {
