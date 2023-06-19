@@ -43,7 +43,7 @@ export class users_license extends Model<users_licenseAttributes, users_licenseA
     @Column({
     	allowNull: true,
     	type: DataType.DATE,
-    	defaultValue: Sequelize.literal("now()") 
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	usli_modified_date?: Date;
 

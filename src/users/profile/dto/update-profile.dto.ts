@@ -15,8 +15,8 @@ export class UpdateProfileDto extends PartialType(CreateProfileDto) {
     newSchool?: string
     newDegree?: string
     newFieldStudy?: string
-    newStartDate?: Date
-    newEndDate?: Date
+    newStartDate?: string
+    newEndDate?: string
     newGrade?: string
     newActivitis?: string
     newDescription?: string
@@ -28,4 +28,8 @@ export class UpdateProfileDto extends PartialType(CreateProfileDto) {
     newEmployeType?: string
     newExperienceType?: string
     newSkill?: string
+    // usme_file_link?: string
+    usme_filename?: string
+    // usme_filesize?: number
+    // usme_filetype?: string
 }

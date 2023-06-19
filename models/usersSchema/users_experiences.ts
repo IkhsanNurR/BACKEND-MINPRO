@@ -7,15 +7,15 @@ export interface users_experiencesAttributes {
     usex_entity_id: number;
     usex_title?: string;
     usex_profile_headline?: string;
+    usex_employment_type?: string;
     usex_company_name?: string;
-    usex_city_id?: number;
     usex_is_current?: string;
-    usex_start_date?: Date;
-    usex_end_date?: Date;
+    usex_start_date?: string;
+    usex_end_date?: string;
     usex_industry?: string;
     usex_description?: string;
-    usex_employment_type?: string;
     usex_experience_type?: string;
+    usex_city_id?: number;
 }
 
 @Table({
@@ -36,7 +36,7 @@ export class users_experiences extends Model<users_experiencesAttributes, users_
     	unique: true 
     })
     @Index({
-    	name: "usex_id_key",
+    	name: "users_experiences_usex_id_key",
     	using: "btree",
     	unique: true 
     })
@@ -67,15 +67,15 @@ export class users_experiences extends Model<users_experiencesAttributes, users_
 
     @Column({
     	allowNull: true,
-    	type: DataType.STRING(255) 
+    	type: DataType.STRING(15) 
     })
-    	usex_company_name?: string;
+    	usex_employment_type?: string;
 
     @Column({
     	allowNull: true,
-    	type: DataType.INTEGER 
+    	type: DataType.STRING(255) 
     })
-    	usex_city_id?: number;
+    	usex_company_name?: string;
 
     @Column({
     	allowNull: true,
@@ -85,15 +85,15 @@ export class users_experiences extends Model<users_experiencesAttributes, users_
 
     @Column({
     	allowNull: true,
-    	type: DataType.DATE 
+    	type: DataType.STRING 
     })
-    	usex_start_date?: Date;
+    	usex_start_date?: string;
 
     @Column({
     	allowNull: true,
-    	type: DataType.DATE 
+    	type: DataType.STRING 
     })
-    	usex_end_date?: Date;
+    	usex_end_date?: string;
 
     @Column({
     	allowNull: true,
@@ -111,12 +111,12 @@ export class users_experiences extends Model<users_experiencesAttributes, users_
     	allowNull: true,
     	type: DataType.STRING(15) 
     })
-    	usex_employment_type?: string;
+    	usex_experience_type?: string;
 
     @Column({
     	allowNull: true,
-    	type: DataType.STRING(15) 
+    	type: DataType.INTEGER 
     })
-    	usex_experience_type?: string;
+    	usex_city_id?: number;
 
 }

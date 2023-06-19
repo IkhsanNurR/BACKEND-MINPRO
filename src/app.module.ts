@@ -4,7 +4,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { HrModule } from './hr/hr.module';
 import { CurriculumModule } from './curriculum/curriculum.module';
 import { BootcampModule } from './bootcamp/bootcamp.module';
-import { JobhireModule } from './jobhire/jobhire.module';
+import { JobHireModule } from './jobhire/jobhire.module';
 import { SalesModule } from './sales/sales.module';
 import { PaymentModule } from './payment/payment.module';
 import { ProfileModule } from './users/profile/profile.module';
@@ -14,6 +14,7 @@ import { AddressTypeModule } from './master/address_type/address_type.module';
 import { SkillTypeModule } from './master/skill_type/skill_type.module';
 import { AddressModule } from './master/address/address.module';
 import { skill_type } from 'models/masterSchema';
+import { JobModule } from './users/job/job.module';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import { skill_type } from 'models/masterSchema';
     HrModule,
     CurriculumModule,
     BootcampModule,
-    JobhireModule,
+    JobHireModule,
     SalesModule,
     PaymentModule,
     ProfileModule,
@@ -40,7 +41,8 @@ import { skill_type } from 'models/masterSchema';
     CityModule,
     AddressTypeModule,
     SkillTypeModule,
-    AddressModule
+    AddressModule,
+    JobModule
   ],
   controllers: [],
   providers: [],

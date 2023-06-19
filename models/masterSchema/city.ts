@@ -31,7 +31,7 @@ export class city extends Model<cityAttributes, cityAttributes> implements cityA
 
     @Column({
     	allowNull: true,
-    	type: DataType.STRING(115) 
+    	type: DataType.STRING(155) 
     })
     @Index({
     	name: "city_city_name_key",

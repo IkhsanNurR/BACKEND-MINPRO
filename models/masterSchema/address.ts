@@ -58,11 +58,6 @@ export class address extends Model<addressAttributes, addressAttributes> impleme
     	allowNull: true,
     	type: DataType.STRING(10) 
     })
-    @Index({
-    	name: "address_addr_postal_code_key",
-    	using: "btree",
-    	unique: true 
-    })
     	addr_postal_code?: string;
 
     @Column({
@@ -73,7 +68,7 @@ export class address extends Model<addressAttributes, addressAttributes> impleme
 
     @Column({
     	allowNull: true,
-    	type: DataType.DATE(6),
+    	type: DataType.DATE,
     	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	addr_modifed_date?: Date;

@@ -18,14 +18,26 @@ export interface route_actionsAttributes {
 export class route_actions extends Model<route_actionsAttributes, route_actionsAttributes> implements route_actionsAttributes {
 
     @Column({
-    	allowNull: true,
-    	type: DataType.INTEGER 
+    	primaryKey: true,
+    	autoIncrement: true,
+    	type: DataType.INTEGER,
+    	defaultValue: Sequelize.literal("nextval('master.route_actions_roac_id_seq'::regclass)") 
+    })
+    @Index({
+    	name: "route_actions_pkey",
+    	using: "btree",
+    	unique: true 
     })
     	roac_id?: number;
 
     @Column({
     	allowNull: true,
     	type: DataType.STRING(15) 
+    })
+    @Index({
+    	name: "route_actions_roac_name_key",
+    	using: "btree",
+    	unique: true 
     })
     	roac_name?: string;
 

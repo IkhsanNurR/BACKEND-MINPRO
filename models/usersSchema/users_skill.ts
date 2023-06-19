@@ -27,7 +27,7 @@ export class users_skill extends Model<users_skillAttributes, users_skillAttribu
     	unique: true 
     })
     @Index({
-    	name: "uski_id_key",
+    	name: "users_skill_uski_id_key",
     	using: "btree",
     	unique: true 
     })
@@ -47,7 +47,7 @@ export class users_skill extends Model<users_skillAttributes, users_skillAttribu
     @Column({
     	allowNull: true,
     	type: DataType.DATE,
-    	defaultValue: Sequelize.literal("now()") 
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	uski_modified_date?: Date;
 
@@ -56,7 +56,7 @@ export class users_skill extends Model<users_skillAttributes, users_skillAttribu
     	type: DataType.STRING(15) 
     })
     @Index({
-    	name: "users_skill_uski_skty_name_key",
+    	name: "uski_skty_name",
     	using: "btree",
     	unique: true 
     })

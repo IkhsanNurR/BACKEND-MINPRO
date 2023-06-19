@@ -104,8 +104,7 @@ export class users_education extends Model<users_educationAttributes, users_educ
 
     @Column({
     	allowNull: true,
-    	type: DataType.DATE,
-    	defaultValue: Sequelize.literal("now()") 
+    	type: DataType.DATE 
     })
     	usdu_modified_date?: Date;
 

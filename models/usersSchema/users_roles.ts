@@ -39,7 +39,8 @@ export class users_roles extends Model<users_rolesAttributes, users_rolesAttribu
 
     @Column({
     	allowNull: true,
-    	type: DataType.DATE 
+    	type: DataType.DATE,
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	usro_modified_date?: Date;
 

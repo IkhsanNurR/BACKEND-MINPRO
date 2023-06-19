@@ -17,16 +17,20 @@ export class UsersService {
       let phoneCode = 'Cell'
       createUserDto.uspo_ponty_code = phoneCode
 
-      let role = 2
+      let role = 6
       createUserDto.usro_role_id = role
 
-      let passHash = await bcrypt.hash(createUserDto.user_password, 10)
-      createUserDto.user_password = passHash
+
+      if (createUserDto.password !== createUserDto.confirmPassword)
+        throw new Error("Password don't match")
+
+      let passHash = await bcrypt.hash(createUserDto.password, 10)
+      createUserDto.password = passHash
 
       const res = await this.sequelize.query('CALL users.signupexternal(:username, :password, :role, :phone, :email, :phoneCode)', {
         replacements: {
-          username: createUserDto.user_name,
-          password: createUserDto.user_password,
+          username: createUserDto.usernameOrEmail,
+          password: createUserDto.password,
           role: createUserDto.usro_role_id,
           phone: createUserDto.uspo_number,
           email: createUserDto.pmail_address,
@@ -40,32 +44,31 @@ export class UsersService {
         message: 'sukses'
       }
     } catch (error) {
-      return error.message
+      if (error.message === "Validation error")
+        return {
+          message: "Username is already taken",
+          status: 400
+        }
+      return { message: error.message, status: 400 }
     }
 
-  }
-
-  async findAllKandidat() {
-    try {
-      const res = await this.sequelize.query('select * from users.userskandidat')
-      return res[0]
-    } catch (error) {
-      return error.message
-    }
-  }
-
-  async findAllTalent() {
-    try {
-      const res = await this.sequelize.query('select * from users.userstalent')
-      return res[0]
-    } catch (error) {
-      return error.message
-    }
   }
 
   async findAllUsers() {
     try {
       const res = await this.sequelize.query('select * from users.usersall')
+      return res[0]
+    } catch (error) {
+      return error.message
+    }
+  }
+
+  async findUserById(id: number) {
+    try {
+      const res = await this.sequelize.query('select * from users.usersall where user_entity_id = :id', {
+        replacements: { id },
+        type: QueryTypes.SELECT
+      })
       return res[0]
     } catch (error) {
       return error.message

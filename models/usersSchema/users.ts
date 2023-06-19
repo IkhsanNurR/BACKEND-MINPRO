@@ -86,7 +86,7 @@ export class users extends Model<usersAttributes, usersAttributes> implements us
     @Column({
     	allowNull: true,
     	type: DataType.DATE,
-    	defaultValue: Sequelize.literal("now()") 
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	user_modified_date?: Date;
 

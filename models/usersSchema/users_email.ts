@@ -50,7 +50,7 @@ export class users_email extends Model<users_emailAttributes, users_emailAttribu
     @Column({
     	allowNull: true,
     	type: DataType.DATE,
-    	defaultValue: Sequelize.literal("now()") 
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	pmail_modified_date?: Date;
 

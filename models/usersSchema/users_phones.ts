@@ -41,7 +41,7 @@ export class users_phones extends Model<users_phonesAttributes, users_phonesAttr
     @Column({
     	allowNull: true,
     	type: DataType.DATE,
-    	defaultValue: Sequelize.literal("now()") 
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	uspo_modified_date?: Date;
 

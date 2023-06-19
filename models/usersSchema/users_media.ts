@@ -5,12 +5,12 @@ import {
 export interface users_mediaAttributes {
     usme_id?: number;
     usme_entity_id: number;
-    usme_file_link?: string;
+    usme_filelink?: string;
     usme_filename?: string;
-    usme_filesize?: number;
     usme_filetype?: string;
     usme_note?: string;
-    usme_modified_date?: Date;
+    usme_modified_data?: Date;
+    usme_filesize?: number;
 }
 
 @Table({
@@ -41,30 +41,19 @@ export class users_media extends Model<users_mediaAttributes, users_mediaAttribu
     	using: "btree",
     	unique: true 
     })
-    @Index({
-    	name: "users_media_usme_entity_id_key",
-    	using: "btree",
-    	unique: true 
-    })
     	usme_entity_id!: number;
 
     @Column({
     	allowNull: true,
     	type: DataType.STRING(255) 
     })
-    	usme_file_link?: string;
+    	usme_filelink?: string;
 
     @Column({
     	allowNull: true,
-    	type: DataType.STRING(255) 
+    	type: DataType.STRING(55) 
     })
     	usme_filename?: string;
-
-    @Column({
-    	allowNull: true,
-    	type: DataType.INTEGER 
-    })
-    	usme_filesize?: number;
 
     @Column({
     	allowNull: true,
@@ -81,8 +70,14 @@ export class users_media extends Model<users_mediaAttributes, users_mediaAttribu
     @Column({
     	allowNull: true,
     	type: DataType.DATE,
-    	defaultValue: Sequelize.literal("now()") 
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
-    	usme_modified_date?: Date;
+    	usme_modified_data?: Date;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.INTEGER 
+    })
+    	usme_filesize?: number;
 
 }

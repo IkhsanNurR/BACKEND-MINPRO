@@ -16,7 +16,7 @@ export class industry extends Model<industryAttributes, industryAttributes> impl
 
     @Column({
     	primaryKey: true,
-    	type: DataType.STRING(15) 
+    	type: DataType.STRING(5) 
     })
     @Index({
     	name: "industry_pkey",

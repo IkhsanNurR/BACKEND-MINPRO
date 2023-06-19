@@ -18,9 +18,14 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db_master": "stg -D postgres -h localhost -p 5432 -d miniproject -u postgres -x nata1997 -i -o models/masterSchema -s master",
-    "db_users": "stg -D postgres -h localhost -p 5432 -d miniproject -u postgres -x nata1997 -i -o models/usersSchema -s users -a ./association.csv -- clean",
-    "db_hr": "stg -D postgres -h localhost -p 5432 -d miniproject -u postgres -x nata1997 -i -o models/hrSchema -s hr -- clean"
+    "db_bootcamp": "stg -D postgres -h localhost -p 5432 -d minpro -u postgres -x nata1997 -i -o models/bootcampSchema -s bootcamp",
+    "db_curriculum": "stg -D postgres -h localhost -p 5432 -d minpro -u postgres -x nata1997 -i -o models/curriculumSchema -s curriculum",
+    "db_hr": "stg -D postgres -h localhost -p 5432 -d minpro -u postgres -x nata1997 -i -o models/hrSchema -s hr -- clean",
+    "db_job_hire": "stg -D postgres -h localhost -p 5432 -d minpro -u postgres -x nata1997 -i -o models/jobhireSchema -s job_hire -- clean",
+    "db_master": "stg -D postgres -h localhost -p 5432 -d minpro -u postgres -x nata1997 -i -o models/masterSchema -s master",
+    "db_payment": "stg -D postgres -h localhost -p 5432 -d minpro -u postgres -x nata1997 -i -o models/paymentSchema -s payment",
+    "db_sales": "stg -D postgres -h localhost -p 5432 -d minpro -u postgres -x nata1997 -i -o models/salesSchema -s sales",
+    "db_users": "stg -D postgres -h localhost -p 5432 -d minpro -u postgres -x nata1997 -i -o models/usersSchema -s users -a ./association.csv -- clean"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",

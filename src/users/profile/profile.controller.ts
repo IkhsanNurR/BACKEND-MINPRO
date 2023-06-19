@@ -6,10 +6,27 @@ import * as crypto from 'crypto'
 import * as fs from 'fs'
 import { FileInterceptor } from '@nestjs/platform-express';
 
-const multerConfig = {
+const multerConfigResume = {
   storage: diskStorage({
     destination: function (req, file, cb) {
-      cb(null, `${process.cwd()}/public/users`)
+      cb(null, `${process.cwd()}/public/users/resume`)
+    },
+    filename: (req, file, callback) => {
+      const salt =
+        Math.random().toString(36).substring(2, 15) +
+        Math.random().toString(36).substring(2, 15);
+      const imageNameWithSalt = file.originalname + salt;
+      const md5Hash = crypto.createHmac("md5", '1234').update(imageNameWithSalt).digest('base64')
+      const filename = `${md5Hash}_${file.originalname}`;
+      callback(null, filename)
+    }
+  })
+}
+
+const multerConfigImage = {
+  storage: diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, `${process.cwd()}/public/users/image`)
     },
     filename: (req, file, callback) => {
       const salt =
@@ -29,6 +46,12 @@ const validateImage = new ParseFilePipe({
   })]
   , fileIsRequired: false
 })
+const validateResume = new ParseFilePipe({
+  validators: [new FileTypeValidator({
+    fileType: '.(jpeg|jpg|pdf|word)',
+  })]
+  , fileIsRequired: false
+})
 
 
 @Controller('users/profile')
@@ -36,7 +59,7 @@ export class ProfileController {
   constructor(private readonly profileService: ProfileService) { }
 
   @Patch('/editprofile/:id')
-  @UseInterceptors(FileInterceptor('user_photo', multerConfig))
+  @UseInterceptors(FileInterceptor('user_photo', multerConfigImage))
   updateProfile(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto,
     @UploadedFile(validateImage) file?: Express.Multer.File
   ) {
@@ -50,6 +73,19 @@ export class ProfileController {
       if (file) {
         fs.unlinkSync(file.path)
       }
+      return error.message
+    }
+  }
+
+  @Post('/uploadResume/:id')
+  @UseInterceptors(FileInterceptor('resume', multerConfigResume))
+  uploadResume(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto, @UploadedFile(validateResume) file: Express.Multer.File) {
+    try {
+      if(file){
+        updateProfileDto.usme_filename = file.filename
+      }
+      return this.profileService.uploadResume(+id, updateProfileDto, file)
+    } catch (error) {
       return error.message
     }
   }
@@ -149,9 +185,14 @@ export class ProfileController {
     return this.profileService.deleteSkill(+id)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.profileService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.profileService.findOne(+id);
+  // }
+
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.profileService.findOneResume(+id);
+  // }
 
 }

@@ -48,7 +48,7 @@ export class roles extends Model<rolesAttributes, rolesAttributes> implements ro
     @Column({
     	allowNull: true,
     	type: DataType.DATE,
-    	defaultValue: Sequelize.literal("now()") 
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	role_modified_date?: Date;
 

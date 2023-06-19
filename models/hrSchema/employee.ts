@@ -14,10 +14,10 @@ export interface employeeAttributes {
     emp_vacation_hours?: number;
     emp_sickleave_hours?: number;
     emp_current_flag?: number;
-    emp_emp_entity_id?: number;
     emp_modified_date?: Date;
     emp_type?: string;
     emp_joro_id?: number;
+    emp_emp_entity_id?: number;
 }
 
 @Table({
@@ -110,13 +110,8 @@ export class employee extends Model<employeeAttributes, employeeAttributes> impl
 
     @Column({
     	allowNull: true,
-    	type: DataType.INTEGER 
-    })
-    	emp_emp_entity_id?: number;
-
-    @Column({
-    	allowNull: true,
-    	type: DataType.DATE 
+    	type: DataType.DATE,
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	emp_modified_date?: Date;
 
@@ -131,5 +126,11 @@ export class employee extends Model<employeeAttributes, employeeAttributes> impl
     	type: DataType.INTEGER 
     })
     	emp_joro_id?: number;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.INTEGER 
+    })
+    	emp_emp_entity_id?: number;
 
 }

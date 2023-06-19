@@ -30,7 +30,7 @@ export class users_address extends Model<users_addressAttributes, users_addressA
     @Column({
     	allowNull: true,
     	type: DataType.DATE,
-    	defaultValue: Sequelize.literal("now()") 
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	etad_modified_date?: Date;
 

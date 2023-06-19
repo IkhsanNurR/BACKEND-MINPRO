@@ -1,13 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { phone_number_type, users, users_address, users_education, users_email, users_experiences, users_phones, users_skill } from 'models/usersSchema';
+import { phone_number_type, users, users_address, users_education, users_email, users_experiences, users_media, users_phones, users_skill } from 'models/usersSchema';
 import * as bcrypt from 'bcrypt'
 import * as fs from 'fs'
 import { Sequelize } from 'sequelize-typescript';
 
 function isStartDateBeforeEndDate(startDate: Date, endDate: Date): boolean {
   return startDate < endDate;
+}
+
+function fileType(mime: string) {
+  let type = ''
+
+  if (mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+    type = 'word'
+  } else if (mime === 'application/pdf') {
+    type = 'pdf'
+  } else {
+    type = 'jpg'
+  }
+  return type
 }
 
 @Injectable()
@@ -21,8 +34,31 @@ export class ProfileService {
     @InjectModel(users_address) private readonly UserAddress: typeof users_address,
     @InjectModel(users_education) private readonly UserEducation: typeof users_education,
     @InjectModel(users_experiences) private readonly UserExperiences: typeof users_experiences,
-    @InjectModel(users_skill) private readonly UserSkill: typeof users_skill
+    @InjectModel(users_skill) private readonly UserSkill: typeof users_skill,
+    @InjectModel(users_media) private readonly UserMedia: typeof users_media
   ) { }
+
+  async uploadResume(id: number, updateProfilDto: UpdateProfileDto, file: Express.Multer.File) {
+    try {
+      const res = await this.UserMedia.create({
+        usme_entity_id: id,
+        usme_filename: updateProfilDto.usme_filename,
+        usme_filelink: `/users/resume/${file.filename}`,
+        usme_filesize: file.size,
+        usme_filetype: fileType(file.mimetype)
+      })
+
+      return {
+        data: res,
+        message: "Sukses Upload Resume",
+        status: 200
+      }
+
+    } catch (error) {
+      return error.message
+    }
+  }
+
 
   async editProfile(id: number, updateProfileDto: UpdateProfileDto, file?: Express.Multer.File) {
     try {
@@ -55,11 +91,11 @@ export class ProfileService {
       return {
         data: res,
         status: 200,
-        message: "sukses"
+        message: "Sukses Edit Profile"
       }
     } catch (error) {
       if (file && updateProfileDto.user_photo) {
-        fs.unlinkSync('./public/users/' + file.filename);
+        fs.unlinkSync('./public/users/image' + file.filename);
       }
       return error.message
     }
@@ -102,7 +138,7 @@ export class ProfileService {
       return {
         data: res,
         status: 200,
-        message: "sukses"
+        message: "Berhasil Tambah Email"
       }
     } catch (error) {
       return error.message
@@ -121,7 +157,7 @@ export class ProfileService {
       return {
         data: res,
         status: 200,
-        message: "sukses"
+        message: "Berhasil Edit Email"
       }
     } catch (error) {
       return error.message
@@ -137,7 +173,7 @@ export class ProfileService {
       })
       return {
         status: 200,
-        message: "Berhasil dihapus"
+        message: "Berhasil Hapus Email"
       }
     } catch (error) {
       return error.message
@@ -294,8 +330,8 @@ export class ProfileService {
         usdu_degree: updateProfileDto.newDegree,
         usdu_field_study: updateProfileDto.newFieldStudy,
         usdu_graduate_year: graduateYear.toString(),
-        usdu_start_date: updateProfileDto.newStartDate,
-        usdu_end_date: updateProfileDto.newEndDate,
+        usdu_start_date: startDate,
+        usdu_end_date: endDate,
         usdu_grade: updateProfileDto.newGrade,
         usdu_activities: updateProfileDto.newActivitis,
         usdu_description: updateProfileDto.newDescription
@@ -318,8 +354,8 @@ export class ProfileService {
         usdu_degree: updateProfileDto.newDegree,
         usdu_field_study: updateProfileDto.newFieldStudy,
         usdu_graduate_year: graduateYear.toString(),
-        usdu_start_date: updateProfileDto.newStartDate,
-        usdu_end_date: updateProfileDto.newEndDate,
+        usdu_start_date: new Date(updateProfileDto.newStartDate),
+        usdu_end_date: new Date(updateProfileDto.newEndDate),
         usdu_grade: updateProfileDto.newGrade,
         usdu_activities: updateProfileDto.newActivitis,
         usdu_description: updateProfileDto.newDescription
@@ -459,7 +495,7 @@ export class ProfileService {
 
   async deleteSkill(id: number) {
     try {
-       await this.UserSkill.destroy({
+      await this.UserSkill.destroy({
         where: {
           uski_id: id
         }
@@ -489,6 +525,19 @@ export class ProfileService {
   async findOne(id: number): Promise<users> {
     try {
       const data = await this.User.findByPk(+id)
+      return data
+    } catch (error) {
+      return error.message
+    }
+  }
+  async findOneResume(id: number): Promise<users_media> {
+    try {
+      const data = await this.UserMedia.findOne({
+        where: {
+          usme_entity_id: id
+        }
+      })
+      if (!data) throw new Error("No Resume")
       return data
     } catch (error) {
       return error.message
