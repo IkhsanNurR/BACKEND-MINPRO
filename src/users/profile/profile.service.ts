@@ -53,9 +53,31 @@ export class ProfileService {
         message: "Sukses Upload Resume",
         status: 200
       }
-
     } catch (error) {
+      fs.unlinkSync(file.path)
       return error.message
+    }
+  }
+
+  async deleteResume(id: number) {
+    try {
+      const resume = await this.findOneResume(+id)
+
+      fs.unlinkSync('./public/users/resume/' + resume.usme_filename)
+      await this.UserMedia.destroy({
+        where: {
+          usme_id: id
+        }
+      })
+
+      return {
+        message: "Resume Berhasil Di Hapus",
+        status: 200
+      }
+    } catch (error) {
+      return {
+        message: error.message
+      }
     }
   }
 
@@ -68,7 +90,7 @@ export class ProfileService {
 
       if (file) {
         if (setImage !== null) {
-          fs.unlinkSync('./public/users/' + user.user_photo);
+          fs.unlinkSync('./public/users/image/' + user.user_photo);
         }
         setImage = file.filename;
       }
@@ -534,7 +556,7 @@ export class ProfileService {
     try {
       const data = await this.UserMedia.findOne({
         where: {
-          usme_entity_id: id
+          usme_id: id
         }
       })
       if (!data) throw new Error("No Resume")
