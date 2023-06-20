@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
   HttpException,
   UseInterceptors,
   UploadedFile,
@@ -16,7 +17,6 @@ import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import messageHelper from "src/messagehelper/message";
 import * as fse from "fs-extra";
-import { Express } from "express";
 
 export function MultiFileInterceptorWithDest(destination: string) {
   return FileFieldsInterceptor(
@@ -27,13 +27,13 @@ export function MultiFileInterceptorWithDest(destination: string) {
     {
       storage: diskStorage({
         destination: destination,
-        filename: (req, file, cb) => {
-          const firstname = req.body?.user_firstname;
-          const uniqueSuffix = file.originalname;
-          return cb(
-            null,
-            file.fieldname + "-" + firstname + "-" + uniqueSuffix
-          );
+        filename: async (req, file, cb) => {
+          const random =
+            Math.random().toString(36).substring(2, 15) +
+            Math.random().toString(36).substring(2, 15);
+          const Suffix = file.originalname.trim();
+          console.log(file);
+          return cb(null, file.fieldname + "-" + random + "-" + Suffix);
         },
       }),
       fileFilter: (req, file, cb) => {
@@ -42,14 +42,69 @@ export function MultiFileInterceptorWithDest(destination: string) {
         }
         cb(null, true);
       },
+      limits: {
+        fileSize: 2097152,
+      },
     }
   );
 }
+
+// const MultiFileInterceptorWithDest = (
+//   destination: string
+// ): ReturnType<typeof FileFieldsInterceptor> => {
+//   return FileFieldsInterceptor(
+//     [
+//       { name: "foto", maxCount: 1 },
+//       { name: "cv", maxCount: 1 },
+//     ],
+//     {
+//       storage: diskStorage({
+//         destination: destination,
+//         filename: (req, file, cb) => {
+//           const firstname = req.body.id;
+//           console.log("first", req);
+//           const uniqueSuffix = file.originalname;
+//           return cb(null, `${file.fieldname}-${firstname}-${uniqueSuffix}`);
+//         },
+//       }),
+//       fileFilter: (req, file, cb) => {
+//         if (!file.originalname.match(/\.(jpg|jpeg|png|pdf|docx|doc)$/)) {
+//           return cb(new HttpException("Invalid file type", 403), false);
+//         }
+//         cb(null, true);
+//       },
+//     }
+//   );
+// };
+
+// export { MultiFileInterceptorWithDest };
 
 @Controller("bootcamp")
 export class BootcampController {
   constructor(private readonly bootcampService: BootcampService) {}
 
+  //post
+  @Post("applybatch")
+  @UseInterceptors(MultiFileInterceptorWithDest("./public/users"))
+  async applybatch(
+    @Body() createbatch: any,
+    @UploadedFiles() files: { [fieldname: string]: Express.Multer.File[] }
+  ) {
+    console.log(createbatch);
+    const images = [files.cv?.[0], files.foto?.[0]].filter(Boolean);
+    if (images.length < 2) {
+      for (let i = 0; i < images.length; i++) {
+        const imagePath = "./public/users" + images[i].filename;
+        const exist = fse.existsSync(imagePath);
+        if (fse.existsSync(imagePath)) {
+          fse.remove(imagePath);
+        }
+      }
+      images.forEach((i) => {});
+      return messageHelper("2 Field file harus diisi semua ya!", 400, "Gagal!");
+    }
+    return this.bootcampService.ApplyBatch(images, createbatch);
+  }
   //get semua
   @Get()
   FindAllBatch() {
@@ -116,28 +171,7 @@ export class BootcampController {
     return this.bootcampService.GetTrainerName;
   }
 
-  //post
-
-  @Post("applybatch")
-  @UseInterceptors(MultiFileInterceptorWithDest("./public/users"))
-  async createProduct(
-    @Body() createbatch: any,
-    @UploadedFiles() files: { [fieldname: string]: Express.Multer.File[] }
-  ): Promise<any> {
-    const images = [files.cv?.[0], files.foto?.[0]].filter(Boolean);
-    if (images.length < 2) {
-      for (let i = 0; i < images.length; i++) {
-        const imagePath = "./image/" + images[i].filename;
-        const exist = fse.existsSync(imagePath);
-        if (fse.existsSync(imagePath)) {
-          fse.remove(imagePath);
-        }
-      }
-      images.forEach((i) => {});
-      return messageHelper("2 Field file harus diisi semua ya!", 400, "Gagal!");
-    }
-    return this.bootcampService.ApplyBatch(images, createbatch);
-  }
+  //patch-post
   //batch
   @Post("createbatch")
   async PostCreateBatch(@Body() data: any): Promise<any> {

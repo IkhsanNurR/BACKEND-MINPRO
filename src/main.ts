@@ -2,7 +2,8 @@ import "dotenv/config";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { CorsOptions } from "@nestjs/common/interfaces/external/cors-options.interface";
-import express from "express";
+import express, { urlencoded } from "express";
+import { ValidationPipe } from "@nestjs/common";
 
 const corsOptions: CorsOptions = {
   origin: ["http://192.168.68.136:3000", "http://localhost:3000"], // Replace with your frontend server URL
@@ -15,6 +16,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT;
   // app.use('/image', express.static('image/product'));
+  app.useGlobalPipes(new ValidationPipe());
   app.enableCors(corsOptions);
   await app.listen(port, () => {
     console.log(`server is listening on port ${port}`);

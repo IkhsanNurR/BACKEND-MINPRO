@@ -11,6 +11,12 @@ import {
   talents,
   trainer_programs,
 } from "models/bootcampSchema";
+import {
+  users,
+  users_education,
+  users_email,
+  users_media,
+} from "models/usersSchema";
 @Module({
   imports: [
     SequelizeModule.forFeature([
@@ -21,6 +27,10 @@ import {
       program_apply_progress,
       talents,
       trainer_programs,
+      users,
+      users_email,
+      users_media,
+      users_education,
     ]),
   ],
   controllers: [BootcampController],

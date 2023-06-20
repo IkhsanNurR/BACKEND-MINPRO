@@ -5,9 +5,11 @@ import {
   program_apply,
   program_apply_progress,
 } from "models/bootcampSchema";
+import { users, users_education, users_media } from "models/usersSchema";
 import { Sequelize } from "sequelize-typescript";
 import messageHelper from "src/messagehelper/message";
 import { v4 as uuidv4 } from "uuid";
+import * as fse from "fs-extra";
 
 @Injectable()
 export class BootcampService {
@@ -223,9 +225,64 @@ export class BootcampService {
   //post
   async ApplyBatch(images: Express.Multer.File[], data: any) {
     try {
-      console.log(data);
-      console.log(images);
-      return data;
+      const old_photo = await users.findOne({ where: { user_entity_id: 26 } });
+      const old_media = await users_media.findOne({
+        where: { usme_entity_id: 26 },
+      });
+      const cvFile = images.find((file) => file.fieldname === "cv");
+      const cvType = cvFile.mimetype.split("/");
+      const fotoFile = images.find((file) => file.fieldname === "foto");
+      const fotoType = fotoFile.mimetype.split("/");
+      const result = await this.sequelize.transaction(async (t) => {
+        const data1 = await users.update(
+          {
+            user_first_name: data.first_name,
+            user_last_name: data.last_name,
+            user_birth_date: data.birth_date,
+            user_photo: fotoFile.filename,
+          },
+          {
+            where: { user_entity_id: data.user_entity_id },
+            transaction: t,
+          }
+        );
+        const data2 = await users_education.update(
+          {
+            usdu_school: data.usdu_school,
+            usdu_degree: data.usdu_degree,
+            usdu_field_study: data.usdu_field,
+          },
+          {
+            where: { usdu_entity_id: data.user_entity_id },
+            transaction: t,
+          }
+        );
+        const data3 = await users_media.update(
+          {
+            usme_filename: cvFile.filename,
+            usme_filetype: cvType[1],
+            usme_filesize: cvFile.size,
+          },
+          { where: { usme_entity_id: data.user_entity_id } }
+        );
+
+        return { data1, data2, data3 };
+      });
+      if (old_photo.user_photo) {
+        const imagePath = "./public/users/" + old_photo.user_photo;
+        const exist = fse.existsSync(imagePath);
+        if (fse.existsSync(imagePath)) {
+          fse.remove(imagePath);
+        }
+      }
+      if (old_media.usme_filename) {
+        const imagePath = "./public/users/" + old_media.usme_filename;
+        const exist = fse.existsSync(imagePath);
+        if (fse.existsSync(imagePath)) {
+          fse.remove(imagePath);
+        }
+      }
+      return messageHelper("yeay", 201, "berhasil");
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
     }
@@ -477,21 +534,19 @@ export class BootcampService {
 
   async PostEvaluationDetail(data: any) {
     try {
-      console.log(data);
       const fullname = data.fullname;
       const member = data.evaluation;
       const batchTrainees = JSON.stringify(member);
-      console.log(batchTrainees);
-      // const query = `CALL bootcamp.createEvaluation(:total_score, :batch_id, :trainee_id, :batr_status, :trainee`
-      // const result = await this.sequelize.query(query, {
-      //     replacements: {
-      //       total_score : data.batr_total_score,
-      //       batch_id: data.batch_id,
-      //       trainee_id : data.trainee_id,
-      //       batr_status: data.batr_status,
-      //       trainee: data.evaluation
-      //     },
-      //   });
+      const query = `CALL bootcamp.createEvaluation(:total_score, :batch_id, :trainee_id, :batr_status, :trainee)`;
+      const result = await this.sequelize.query(query, {
+        replacements: {
+          total_score: +data.batr_total_score,
+          batch_id: +data.batr_batch_id,
+          trainee_id: +data.batr_trainee_entity_id,
+          batr_status: data.status,
+          trainee: batchTrainees,
+        },
+      });
       // const datanya: any = {
       //   batr_total_score: 25,
       //   batch_id: 5,
@@ -533,7 +588,9 @@ export class BootcampService {
       // console.log(result);
       // console.log(data.evaluation);
       // console.log(data.evaluation[0].technical);
+      return messageHelper("Sukses", 201, `Berhasil evaluasi ${fullname}`);
     } catch (error) {
+      console.log(error.message);
       return messageHelper(error.message, 400, "Gagal");
     }
   }
