@@ -25,7 +25,6 @@ export class batch_trainee_evaluation extends Model<batch_trainee_evaluationAttr
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('bootcamp.batch_trainee_evaluation_btev_id_seq'::regclass)") 
     })

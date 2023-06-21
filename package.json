@@ -21,7 +21,7 @@
     "db_master": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/masterSchema -s master",
     "db_users": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/usersSchema -s users -a ./association.csv -- clean",
     "db_curriculum": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/curriculumSchema -s curriculum",
-    "db_bootcamp": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/bootcampSchema -s bootcamp",
+    "db_bootcamp": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/bootcampSchema -s bootcamp --clean",
     "db_hr": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/hrSchema -s hr"
   },
   "dependencies": {

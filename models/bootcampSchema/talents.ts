@@ -6,13 +6,14 @@ export interface talentsAttributes {
     id?: number;
     talent_fullname?: string;
     talent_user_entity_id?: number;
-    talent_technology?: number;
+    talent_technology?: string;
     talent_batch_id?: number;
     talent_start_date?: string;
     talent_end_date?: string;
     talent_trainer?: string;
     talent_skill?: string;
     talent_status?: string;
+    talent_batch_name?: string;
 }
 
 @Table({
@@ -24,7 +25,6 @@ export class talents extends Model<talentsAttributes, talentsAttributes> impleme
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('bootcamp.talent_id_seq'::regclass)") 
     })
@@ -49,9 +49,9 @@ export class talents extends Model<talentsAttributes, talentsAttributes> impleme
 
     @Column({
     	allowNull: true,
-    	type: DataType.INTEGER 
+    	type: DataType.STRING(256) 
     })
-    	talent_technology?: number;
+    	talent_technology?: string;
 
     @Column({
     	allowNull: true,
@@ -89,5 +89,11 @@ export class talents extends Model<talentsAttributes, talentsAttributes> impleme
     	defaultValue: Sequelize.literal("'idle'::character varying") 
     })
     	talent_status?: string;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.STRING(15) 
+    })
+    	talent_batch_name?: string;
 
 }

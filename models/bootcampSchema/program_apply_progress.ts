@@ -23,7 +23,6 @@ export class program_apply_progress extends Model<program_apply_progressAttribut
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('bootcamp.program_apply_progress_parog_id_seq'::regclass)") 
     })
@@ -58,7 +57,8 @@ export class program_apply_progress extends Model<program_apply_progressAttribut
 
     @Column({
     	allowNull: true,
-    	type: DataType.DATE 
+    	type: DataType.DATE,
+    	defaultValue: Sequelize.literal("now()") 
     })
     	parog_action_date?: Date;
 

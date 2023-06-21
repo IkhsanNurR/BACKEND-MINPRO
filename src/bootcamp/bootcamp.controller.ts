@@ -18,7 +18,7 @@ import { diskStorage } from "multer";
 import messageHelper from "src/messagehelper/message";
 import * as fse from "fs-extra";
 
-export function MultiFileInterceptorWithDest(destination: string) {
+export function MultiFileInterceptorWithDest() {
   return FileFieldsInterceptor(
     [
       { name: "foto", maxCount: 1 },
@@ -26,7 +26,14 @@ export function MultiFileInterceptorWithDest(destination: string) {
     ],
     {
       storage: diskStorage({
-        destination: destination,
+        destination: (req, file, cb) => {
+          file.mimetype.startsWith("image") ||
+          file.originalname.endsWith(".jpg") ||
+          file.originalname.endsWith(".jpeg") ||
+          file.originalname.endsWith(".png")
+            ? "./public/users"
+            : "./public/users/cv";
+        },
         filename: async (req, file, cb) => {
           const random =
             Math.random().toString(36).substring(2, 15) +
@@ -85,7 +92,7 @@ export class BootcampController {
 
   //post
   @Post("applybatch")
-  @UseInterceptors(MultiFileInterceptorWithDest("./public/users"))
+  @UseInterceptors(MultiFileInterceptorWithDest())
   async applybatch(
     @Body() createbatch: any,
     @UploadedFiles() files: { [fieldname: string]: Express.Multer.File[] }
@@ -105,7 +112,17 @@ export class BootcampController {
     }
     return this.bootcampService.ApplyBatch(images, createbatch);
   }
-  //get semua
+
+  @Get("bootcampindex")
+  FindBootcampIndex() {
+    return this.bootcampService.GetBootcampIndex();
+  }
+
+  @Get("talentbootcamp")
+  FindTalents() {
+    return this.bootcampService.GetTalents();
+  }
+
   @Get()
   FindAllBatch() {
     return this.bootcampService.AppBatchFindAll();

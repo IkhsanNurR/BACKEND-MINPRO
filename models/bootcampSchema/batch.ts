@@ -25,7 +25,6 @@ export class batch extends Model<batchAttributes, batchAttributes> implements ba
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('bootcamp.batch_batch_id_seq'::regclass)") 
     })

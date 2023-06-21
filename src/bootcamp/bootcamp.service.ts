@@ -2,8 +2,10 @@ import { Injectable } from "@nestjs/common";
 import {
   batch,
   batch_trainee,
+  batch_trainee_evaluation,
   program_apply,
   program_apply_progress,
+  talents,
 } from "models/bootcampSchema";
 import { users, users_education, users_media } from "models/usersSchema";
 import { Sequelize } from "sequelize-typescript";
@@ -222,6 +224,25 @@ export class BootcampService {
     }
   }
 
+  async GetBootcampIndex() {
+    try {
+      const query = `SELECT * FROM curriculum.program_entity`;
+      const result = await this.sequelize.query(query);
+      return messageHelper(result[0], 200, "berhasil");
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
+  async GetTalents() {
+    try {
+      const result = await talents.findAll();
+      return messageHelper(result, 200, "Berhasi");
+    } catch (error) {
+      return messageHelper(error.message, 400, "Gagal");
+    }
+  }
+
   //post
   async ApplyBatch(images: Express.Multer.File[], data: any) {
     try {
@@ -265,8 +286,18 @@ export class BootcampService {
           },
           { where: { usme_entity_id: data.user_entity_id } }
         );
+        const query = `CALL bootcamp.createProgramApplyProgress(:prap_apply, :prog_apply_progress)`;
+        const replacements = {
+          prap_apply: "ea",
+          prog_apply_progress: "ea",
+        };
 
-        return { data1, data2, data3 };
+        const queryResult = await this.sequelize.query(query, {
+          replacements,
+          transaction: t,
+        });
+
+        return { data1, data2, data3, queryResult };
       });
       if (old_photo.user_photo) {
         const imagePath = "./public/users/" + old_photo.user_photo;
@@ -415,6 +446,7 @@ export class BootcampService {
     }
   }
 
+  //masih kurang
   async PostSetBatchToClose(data: any) {
     try {
       const batch_id = data.batch_id;
@@ -598,6 +630,21 @@ export class BootcampService {
   async PostEditStatusEvaluation(data: any) {
     try {
       console.log(data);
+      const result = await batch_trainee.update(
+        {
+          batr_status: data.status,
+          batr_certificated: "0",
+          batr_access_grant: "0",
+          batr_access_token: "",
+          batr_review: data.review,
+        },
+        { where: { batr_trainee_entity_id: +data.user_entity_id } }
+      );
+      return messageHelper(
+        "Sukses",
+        201,
+        `status ${data.fullname} diubah menjadi resign!`
+      );
     } catch (error) {
       return messageHelper(error.message, 400, "Gagal");
     }
