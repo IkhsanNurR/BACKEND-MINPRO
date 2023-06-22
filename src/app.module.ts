@@ -7,7 +7,7 @@ import { CurriculumModule } from "./curriculum/curriculum.module";
 import { BootcampModule } from "./bootcamp/bootcamp.module";
 // import { JobhireModule } from './jobhire/jobhire.module';
 // import { SalesModule } from './sales/sales.module';
-// import { PaymentModule } from './payment/payment.module';
+import { PaymentModule } from "./payment/payment.module";
 
 @Module({
   imports: [
@@ -31,7 +31,7 @@ import { BootcampModule } from "./bootcamp/bootcamp.module";
     BootcampModule,
     // JobhireModule,
     // SalesModule,
-    // PaymentModule,
+    PaymentModule,
   ],
   controllers: [],
   providers: [],
