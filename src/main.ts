@@ -4,6 +4,8 @@ import { AppModule } from "./app.module";
 import { CorsOptions } from "@nestjs/common/interfaces/external/cors-options.interface";
 import express, { urlencoded } from "express";
 import { ValidationPipe } from "@nestjs/common";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { join } from "path";
 
 const corsOptions: CorsOptions = {
   origin: [
@@ -17,11 +19,12 @@ const corsOptions: CorsOptions = {
 };
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
   const port = process.env.PORT;
-  // app.use('/image', express.static('image/product'));
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors(corsOptions);
+  app.enableCors({ credentials: true });
+
+  app.useStaticAssets(join(__dirname, "..", "..", "public"));
   await app.listen(port, () => {
     console.log(`server is listening on port ${port}`);
   });

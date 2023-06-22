@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { UsersModule } from "./users/users.module";
+// import { UsersModule } from "./users/users.module";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { MasterModule } from "./master/master.module";
 import { HrModule } from "./hr/hr.module";

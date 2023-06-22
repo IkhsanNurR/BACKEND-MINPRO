@@ -107,7 +107,6 @@ export class BootcampController {
           fse.remove(imagePath);
         }
       }
-      images.forEach((i) => {});
       return messageHelper("2 Field file harus diisi semua ya!", 400, "Gagal!");
     }
     return this.bootcampService.ApplyBatch(images, createbatch);
