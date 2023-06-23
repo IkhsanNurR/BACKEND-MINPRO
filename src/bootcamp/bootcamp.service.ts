@@ -261,7 +261,6 @@ export class BootcampService {
           prap_user_entity_id: data.user_entity_id,
           prap_prog_entity_id: data.prog_entity_id,
           prap_status: "wait",
-          prap_gpa: data.prap_gpa,
         },
       ];
       const apply_prog = [
@@ -290,6 +289,7 @@ export class BootcampService {
             usdu_school: data.usdu_school,
             usdu_degree: data.usdu_degree,
             usdu_field_study: data.usdu_field,
+            // usdu_grade : data.prap_gpa
           },
           {
             where: { usdu_entity_id: data.user_entity_id },
