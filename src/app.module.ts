@@ -14,7 +14,7 @@ import { AuthModule } from "./users/auth/auth.module";
 // import { SkillTypeModule } from "./master/skill_type/skill_type.module";
 // import { AddressModule } from "./master/address/address.module";
 import { skill_type } from "models/masterSchema";
-// import { JobModule } from "./users/job/job.module";
+import { JobModule } from "./users/job/job.module";
 
 @Module({
   imports: [
@@ -42,7 +42,7 @@ import { skill_type } from "models/masterSchema";
     // AddressTypeModule,
     // SkillTypeModule,
     // AddressModule,
-    // JobModule,
+    JobModule,
   ],
   controllers: [],
   providers: [],
