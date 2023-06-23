@@ -246,9 +246,11 @@ export class BootcampService {
   //post
   async ApplyBatch(images: Express.Multer.File[], data: any) {
     try {
-      const old_photo = await users.findOne({ where: { user_entity_id: 26 } });
+      const old_photo = await users.findOne({
+        where: { user_entity_id: data.user_entity_id },
+      });
       const old_media = await users_media.findOne({
-        where: { usme_entity_id: 26 },
+        where: { usme_entity_id: data.user_entity_id },
       });
       const cvFile = images.find((file) => file.fieldname === "cv");
       const cvType = cvFile.mimetype.split("/");
@@ -259,6 +261,7 @@ export class BootcampService {
           prap_user_entity_id: data.user_entity_id,
           prap_prog_entity_id: data.prog_entity_id,
           prap_status: "wait",
+          prap_gpa: data.prap_gpa,
         },
       ];
       const apply_prog = [
