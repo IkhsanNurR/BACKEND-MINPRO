@@ -26,7 +26,7 @@ import { UsersAccountModule } from "./users_account/users_account.module";
     TransactionPaymentModule,
     UsersAccountModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class PaymentModule {}

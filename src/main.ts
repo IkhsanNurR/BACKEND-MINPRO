@@ -9,22 +9,22 @@ import { join } from "path";
 
 const corsOptions: CorsOptions = {
   origin: [
-    "http://192.168.68.136:3000",
+    "http://192.168.68.112:3000",
     "http://192.168.68.197:3000",
     "http://localhost:3000",
   ], // Replace with your frontend server URL
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Add the allowed HTTP methods
   // allowedHeaders: ["Content-Type", "Authorization"], // Add the allowed request headers
-  // credentials: true, // Set to true if you need to pass cookies or authentication headers
+  credentials: true, // Set to true if you need to pass cookies or authentication headers
 };
 
 async function bootstrap() {
   const port = process.env.PORT;
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors({ credentials: true });
+  app.enableCors();
 
-  app.useStaticAssets(join(__dirname, "..", "..", "public"));
+  // app.useStaticAssets(join(__dirname, "..", "..", "public"));
   await app.listen(port, () => {
     console.log(`server is listening on port ${port}`);
   });

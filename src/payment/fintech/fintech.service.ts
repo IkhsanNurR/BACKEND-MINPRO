@@ -58,7 +58,9 @@ export class FintechService {
 
   async findAllFintech() {
     try {
-      const data = await this.sequelize.query("select * from payment.fintech ");
+      const data = await this.sequelize.query(
+        "select * from payment.fintech order by fint_entity_id asc"
+      );
       const success = {
         message: "sukses",
         data: data[0],

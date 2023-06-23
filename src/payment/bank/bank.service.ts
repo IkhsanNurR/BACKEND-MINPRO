@@ -18,11 +18,11 @@ export class BankService {
           type: QueryTypes.SELECT,
         }
       );
-  
+
       if (codeCheck.length > 0) {
         throw new Error("Bank Code already exists!");
       }
-  
+
       const nameCheck = await this.sequelize.query(
         "SELECT * FROM payment.bank WHERE bank_name = :bankName",
         {
@@ -32,16 +32,16 @@ export class BankService {
           type: QueryTypes.SELECT,
         }
       );
-  
+
       if (nameCheck.length > 0) {
         throw new Error("Bank Name already exists!");
       }
-  
+
       const data = `[${JSON.stringify(createBankDto)}]`;
       const result = await this.sequelize.query(
         `CALL payment.insertbank ('${data}')`
       );
-  
+
       const success = {
         message: "Berhasil Membuat Bank",
         data: data[0],
@@ -55,11 +55,12 @@ export class BankService {
       };
     }
   }
-  
 
   async findAllBank() {
     try {
-      const data = await this.sequelize.query("select * from payment.bank");
+      const data = await this.sequelize.query(
+        "select * from payment.bank order by bank_entity_id asc"
+      );
 
       const success = {
         message: "sukses",
@@ -101,11 +102,11 @@ export class BankService {
           type: QueryTypes.SELECT,
         }
       );
-  
+
       if (codeCheck.length > 0) {
         throw new Error("Bank Code already exists!");
       }
-  
+
       const nameCheck = await this.sequelize.query(
         "SELECT * FROM payment.bank WHERE bank_name = :bankName AND bank_entity_id != :id",
         {
@@ -116,11 +117,11 @@ export class BankService {
           type: QueryTypes.SELECT,
         }
       );
-  
+
       if (nameCheck.length > 0) {
         throw new Error("Bank Name already exists!");
       }
-  
+
       const query = await this.sequelize.query(
         `UPDATE payment.bank SET bank_code = :bankCode, bank_name = :bankName WHERE bank_entity_id = :id`,
         {
@@ -132,7 +133,7 @@ export class BankService {
           type: QueryTypes.UPDATE,
         }
       );
-  
+
       return { message: "success", status: 200 };
     } catch (error) {
       const erro = {
@@ -142,7 +143,6 @@ export class BankService {
       return erro;
     }
   }
-
 
   async deleteBank(id: number): Promise<any> {
     try {

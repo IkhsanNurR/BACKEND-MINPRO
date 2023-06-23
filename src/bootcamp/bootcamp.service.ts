@@ -254,6 +254,21 @@ export class BootcampService {
       const cvType = cvFile.mimetype.split("/");
       const fotoFile = images.find((file) => file.fieldname === "foto");
       const fotoType = fotoFile.mimetype.split("/");
+      const apply = [
+        {
+          prap_user_entity_id: data.user_entity_id,
+          prap_prog_entity_id: data.prog_entity_id,
+          prap_status: "wait",
+        },
+      ];
+      const apply_prog = [
+        {
+          parog_user_entity_id: data.user_entity_id,
+          parog_prog_entity_id: data.prog_entity_id,
+          parog_progress_name: "apply",
+          parog_status: "open",
+        },
+      ];
       const result = await this.sequelize.transaction(async (t) => {
         const data1 = await users.update(
           {
@@ -286,10 +301,11 @@ export class BootcampService {
           },
           { where: { usme_entity_id: data.user_entity_id } }
         );
-        const query = `CALL bootcamp.createProgramApplyProgress(:prap_apply, :prog_apply_progress)`;
+        const query = `CALL bootcamp.createProgramApplyProgress(:prog_entity ,:prap_apply, :prog_apply_progress)`;
         const replacements = {
-          prap_apply: "ea",
-          prog_apply_progress: "ea",
+          prog_entity: data.prog_entity_id,
+          prap_apply: JSON.stringify(apply),
+          prog_apply_progress: JSON.stringify(apply_prog),
         };
 
         const queryResult = await this.sequelize.query(query, {

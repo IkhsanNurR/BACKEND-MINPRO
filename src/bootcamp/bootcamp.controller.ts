@@ -27,12 +27,18 @@ export function MultiFileInterceptorWithDest() {
     {
       storage: diskStorage({
         destination: (req, file, cb) => {
-          file.mimetype.startsWith("image") ||
-          file.originalname.endsWith(".jpg") ||
-          file.originalname.endsWith(".jpeg") ||
-          file.originalname.endsWith(".png")
-            ? "./public/users"
-            : "./public/users/cv";
+          console.log(file.mimetype);
+          console.log(file.originalname.endsWith(".jpg"));
+          if (
+            file.mimetype.startsWith("image") ||
+            file.originalname.endsWith(".jpg") ||
+            file.originalname.endsWith(".jpeg") ||
+            file.originalname.endsWith(".png")
+          ) {
+            cb(null, "./public/users");
+          } else {
+            cb(null, "./public/users/cv");
+          }
         },
         filename: async (req, file, cb) => {
           const random =
@@ -97,7 +103,7 @@ export class BootcampController {
     @Body() createbatch: any,
     @UploadedFiles() files: { [fieldname: string]: Express.Multer.File[] }
   ) {
-    console.log(createbatch);
+    // console.log(createbatch);
     const images = [files.cv?.[0], files.foto?.[0]].filter(Boolean);
     if (images.length < 2) {
       for (let i = 0; i < images.length; i++) {
