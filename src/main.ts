@@ -23,7 +23,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
-
   // app.useStaticAssets(join(__dirname, "..", "..", "public"));
   await app.listen(port, () => {
     console.log(`server is listening on port ${port}`);
