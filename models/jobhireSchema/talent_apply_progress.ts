@@ -4,8 +4,8 @@ import {
 
 export interface talent_apply_progressAttributes {
     tapr_id?: number;
-    taap_user_entity_id: number;
-    taap_entity_id: number;
+    tapr_taap_user_entity_id: number;
+    tapr_taap_entity_id: number;
     tapr_modified_date?: Date;
     tapr_status?: string;
     tapr_comment?: string;
@@ -40,7 +40,7 @@ export class talent_apply_progress extends Model<talent_apply_progressAttributes
     	using: "btree",
     	unique: true 
     })
-    	taap_user_entity_id!: number;
+    	tapr_taap_user_entity_id!: number;
 
     @Column({
     	primaryKey: true,
@@ -51,12 +51,12 @@ export class talent_apply_progress extends Model<talent_apply_progressAttributes
     	using: "btree",
     	unique: true 
     })
-    	taap_entity_id!: number;
+    	tapr_taap_entity_id!: number;
 
     @Column({
     	allowNull: true,
     	type: DataType.DATE,
-    	defaultValue: Sequelize.literal("now()") 
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	tapr_modified_date?: Date;
 

@@ -37,7 +37,7 @@ export class job_category extends Model<job_categoryAttributes, job_categoryAttr
     @Column({
     	allowNull: true,
     	type: DataType.DATE(6),
-    	defaultValue: Sequelize.literal("now()") 
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	joca_modified_date?: Date;
 

@@ -10,6 +10,7 @@ import { ProfileModule } from "./users/profile/profile.module";
 import { AuthModule } from "./users/auth/auth.module";
 import { skill_type } from "models/masterSchema";
 import { JobModule } from "./users/job/job.module";
+import { JobHireModule } from "./jobhire/jobhire.module";
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { JobModule } from "./users/job/job.module";
     HrModule,
     CurriculumModule,
     BootcampModule,
-    // JobHireModule,
+    JobHireModule,
     SalesModule,
     PaymentModule,
     ProfileModule,

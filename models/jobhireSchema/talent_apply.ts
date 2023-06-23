@@ -55,7 +55,7 @@ export class talent_apply extends Model<talent_applyAttributes, talent_applyAttr
     @Column({
     	allowNull: true,
     	type: DataType.DATE,
-    	defaultValue: Sequelize.literal("now()") 
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	taap_modified_date?: Date;
 

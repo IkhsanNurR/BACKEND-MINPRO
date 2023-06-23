@@ -3,12 +3,13 @@ import {
 } from "sequelize-typescript";
 
 export interface clientAttributes {
-    clit_id: number;
+    clit_id?: number;
     clit_name?: string;
     clit_about?: string;
     clit_modified_date?: Date;
     clit_addr_id?: number;
     clit_emra_id?: number;
+    clit_indu_code?: string;
 }
 
 @Table({
@@ -20,14 +21,16 @@ export class client extends Model<clientAttributes, clientAttributes> implements
 
     @Column({
     	primaryKey: true,
-    	type: DataType.INTEGER 
+    	autoIncrement: true,
+    	type: DataType.INTEGER,
+    	defaultValue: Sequelize.literal("nextval('jobhire.client_clit_id_seq'::regclass)") 
     })
     @Index({
     	name: "client_pkey",
     	using: "btree",
     	unique: true 
     })
-    	clit_id!: number;
+    	clit_id?: number;
 
     @Column({
     	allowNull: true,
@@ -49,7 +52,7 @@ export class client extends Model<clientAttributes, clientAttributes> implements
     @Column({
     	allowNull: true,
     	type: DataType.DATE,
-    	defaultValue: Sequelize.literal("now()") 
+    	defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") 
     })
     	clit_modified_date?: Date;
 
@@ -64,5 +67,11 @@ export class client extends Model<clientAttributes, clientAttributes> implements
     	type: DataType.INTEGER 
     })
     	clit_emra_id?: number;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.STRING(15) 
+    })
+    	clit_indu_code?: string;
 
 }
