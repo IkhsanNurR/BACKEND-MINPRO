@@ -11,8 +11,8 @@ export interface users_experiencesAttributes {
     usex_company_name?: string;
     usex_city_id?: number;
     usex_is_current?: string;
-    usex_start_date?: Date;
-    usex_end_date?: Date;
+    usex_start_date?: string;
+    usex_end_date?: string;
     usex_industry?: string;
     usex_description?: string;
     usex_experience_type?: string;
@@ -91,15 +91,15 @@ export class users_experiences extends Model<users_experiencesAttributes, users_
 
     @Column({
     	allowNull: true,
-    	type: DataType.DATE 
+    	type: DataType.STRING 
     })
-    	usex_start_date?: Date;
+    	usex_start_date?: string;
 
     @Column({
     	allowNull: true,
-    	type: DataType.DATE 
+    	type: DataType.STRING 
     })
-    	usex_end_date?: Date;
+    	usex_end_date?: string;
 
     @Column({
     	allowNull: true,

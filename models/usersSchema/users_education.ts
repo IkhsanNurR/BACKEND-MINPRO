@@ -8,8 +8,8 @@ export interface users_educationAttributes {
     usdu_school?: string;
     usdu_field_study?: string;
     usdu_graduate_year?: string;
-    usdu_start_date?: string;
-    usdu_end_date?: string;
+    usdu_start_date?: Date;
+    usdu_end_date?: Date;
     usdu_grade?: string;
     usdu_activities?: string;
     usdu_description?: string;
@@ -72,15 +72,15 @@ export class users_education extends Model<users_educationAttributes, users_educ
 
     @Column({
     	allowNull: true,
-    	type: DataType.STRING 
+    	type: DataType.DATE 
     })
-    	usdu_start_date?: string;
+    	usdu_start_date?: Date;
 
     @Column({
     	allowNull: true,
-    	type: DataType.STRING 
+    	type: DataType.DATE 
     })
-    	usdu_end_date?: string;
+    	usdu_end_date?: Date;
 
     @Column({
     	allowNull: true,

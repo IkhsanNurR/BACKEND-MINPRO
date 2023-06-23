@@ -18,6 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "db_master": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/masterSchema -s master",
     "db_users": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/usersSchema -s users  --clean"
   },
   "dependencies": {
