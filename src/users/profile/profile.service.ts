@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { phone_number_type, users, users_address, users_education, users_email, users_experiences, users_media, users_phones, users_skill } from 'models/usersSchema';
 import * as bcrypt from 'bcrypt'
 import * as fs from 'fs'
+import * as path from 'path'
 import { Sequelize } from 'sequelize-typescript';
 
 function isStartDateBeforeEndDate(startDate: Date, endDate: Date): boolean {
@@ -40,10 +41,14 @@ export class ProfileService {
 
   async uploadResume(id: number, updateProfilDto: UpdateProfileDto, file: Express.Multer.File) {
     try {
+
+      const filename = path.basename(file.path);
+      const newPath = `http://localhost:8000/users/resume/${filename}`;
+
       const res = await this.UserMedia.create({
         usme_entity_id: id,
         usme_filename: updateProfilDto.usme_filename,
-        usme_filelink: `/users/resume/${file.filename}`,
+        usme_filelink: newPath,
         usme_filesize: file.size,
         usme_filetype: fileType(file.mimetype)
       })
@@ -55,7 +60,7 @@ export class ProfileService {
       }
     } catch (error) {
       fs.unlinkSync(file.path)
-      return error.message
+      return { message: error.message }
     }
   }
 
@@ -119,7 +124,7 @@ export class ProfileService {
       if (file && updateProfileDto.user_photo) {
         fs.unlinkSync('./public/users/image' + file.filename);
       }
-      return error.message
+      return { message: error.message.name }
     }
   }
 
@@ -128,7 +133,7 @@ export class ProfileService {
       const user = await this.findOne(+id)
 
       const match = await bcrypt.compare(updateProfileDto.user_password, user.user_password)
-      if (!match) throw new Error("Password salah")
+      if (!match) throw new Error("Password Lama Salah")
 
       if (updateProfileDto.newPassword != updateProfileDto.retypePassword) throw new Error("Password Baru Tidak Cocok")
 
@@ -144,10 +149,10 @@ export class ProfileService {
       return {
         data: res,
         status: 200,
-        message: 'sukses'
+        message: 'Sukses Ganti Password'
       }
     } catch (error) {
-      return error.message
+      return { message: error.message, status: 400 }
     }
   }
 
@@ -163,7 +168,7 @@ export class ProfileService {
         message: "Berhasil Tambah Email"
       }
     } catch (error) {
-      return error.message
+      return { message: error.message }
     }
   }
 
@@ -182,7 +187,7 @@ export class ProfileService {
         message: "Berhasil Edit Email"
       }
     } catch (error) {
-      return error.message
+      return { message: error.message }
     }
   }
 
@@ -198,7 +203,9 @@ export class ProfileService {
         message: "Berhasil Hapus Email"
       }
     } catch (error) {
-      return error.message
+      return {
+        message: error.message
+      }
     }
   }
 
@@ -212,10 +219,12 @@ export class ProfileService {
       return {
         data: res,
         status: 200,
-        message: "sukses"
+        message: "Berhasil Tambah Phone"
       }
     } catch (error) {
-      return error.message
+      return {
+        message: error.message
+      }
     }
   }
 
@@ -233,10 +242,12 @@ export class ProfileService {
       return {
         data: res,
         status: 200,
-        message: 'sukses'
+        message: 'Berhasil Edit Phone'
       }
     } catch (error) {
-      return error.message
+      return {
+        message: error.message
+      }
     }
   }
 
@@ -250,11 +261,11 @@ export class ProfileService {
       })
 
       return {
-        message: 'sukses',
+        message: 'Berhasil Hapus Phone',
         status: 200
       }
     } catch (error) {
-      return error.message
+      return { message: error.message }
     }
   }
 
@@ -280,10 +291,10 @@ export class ProfileService {
       return {
         data: res,
         status: 200,
-        message: "sukses"
+        message: "Berhasil Tambah Address"
       };
     } catch (error) {
-      return error.message;
+      return { message: error.message }
     }
   }
 
@@ -309,10 +320,12 @@ export class ProfileService {
       return {
         data: res,
         status: 200,
-        message: 'sukses'
+        message: 'Berhasil Edit Address'
       }
     } catch (error) {
-      return error.message
+      return {
+        message: error.message
+      }
     }
   }
 
@@ -324,11 +337,13 @@ export class ProfileService {
         }
       })
       return {
-        message: 'sukses',
+        message: 'Berhasil Hapus Address',
         status: 200
       }
     } catch (error) {
-      return error.message
+      return {
+        message: error.message
+      }
     }
   }
 
@@ -361,10 +376,12 @@ export class ProfileService {
       return {
         data: res,
         status: 200,
-        message: "sukses"
+        message: "Berhasil Tambah Data Education"
       }
     } catch (error) {
-      return error.message
+      return {
+        message: error.message
+      }
     }
   }
 
@@ -392,7 +409,7 @@ export class ProfileService {
         message: "Edit sukses"
       }
     } catch (error) {
-      return error.message
+      return { message: error.message }
     }
   }
 
@@ -404,11 +421,11 @@ export class ProfileService {
         }
       })
       return {
-        message: "sukses",
+        message: "Berhasil Hapus Education",
         status: 200
       }
     } catch (error) {
-      return error.message
+      return { message: error.message }
     }
   }
 
@@ -438,11 +455,11 @@ export class ProfileService {
       })
       return {
         data: res,
-        message: "sukses",
+        message: "Berhasil Tambah Experience",
         status: 200
       }
     } catch (error) {
-      return error.message
+      return { message: error.message }
     }
   }
 
@@ -475,11 +492,11 @@ export class ProfileService {
       })
       return {
         data: res,
-        message: "sukses",
+        message: "Berhasil Edit Experience",
         status: 200
       }
     } catch (error) {
-      return error.message
+      return { message: error.message }
     }
   }
 
@@ -491,11 +508,11 @@ export class ProfileService {
         }
       })
       return {
-        message: "sukses",
+        message: "Berhasil Delete Experience",
         status: 200
       }
     } catch (error) {
-      return error.message
+      return { message: error.message }
     }
   }
 
@@ -508,10 +525,10 @@ export class ProfileService {
       return {
         data: res,
         status: 200,
-        message: "sukses"
+        message: "Berhasil Tambah Skill"
       }
     } catch (error) {
-      return error.message
+      return { message: error.message }
     }
   }
 
@@ -524,10 +541,10 @@ export class ProfileService {
       })
       return {
         status: 200,
-        message: "sukses"
+        message: "Berhasil Delete Skill"
       }
     } catch (error) {
-      return error.message
+      return { message: error.message }
     }
   }
 

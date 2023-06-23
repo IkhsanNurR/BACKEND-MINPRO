@@ -11,6 +11,11 @@ export class UsersController {
     return this.usersService.signUpStudent(createUserDto);
   }
 
+  @Post('/employee')
+  signUpInternal(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.signUpEmployee(createUserDto);
+  }
+
   @Get('all')
   findAllUsers() {
     return this.usersService.findAllUsers()

@@ -41,7 +41,7 @@ const multerConfigImage = {
 
 const validateImage = new ParseFilePipe({
   validators: [new FileTypeValidator({
-    fileType: '.(png|jpg|jpeg|svg)',
+    fileType: '.(png|jpg|jpeg|svg|webp)',
   })]
   , fileIsRequired: false
 })

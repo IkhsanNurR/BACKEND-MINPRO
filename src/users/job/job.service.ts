@@ -38,7 +38,7 @@ export class JobService {
 
       return {
         data: res,
-        message: 'sukses',
+        message: 'Sukses Apply Job',
         status: 200
       }
     } catch (error) {

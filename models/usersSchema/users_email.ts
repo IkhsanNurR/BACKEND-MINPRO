@@ -45,6 +45,11 @@ export class users_email extends Model<users_emailAttributes, users_emailAttribu
     	allowNull: true,
     	type: DataType.STRING(50) 
     })
+    @Index({
+    	name: "pmail_address_unique",
+    	using: "btree",
+    	unique: true 
+    })
     	pmail_address?: string;
 
     @Column({
