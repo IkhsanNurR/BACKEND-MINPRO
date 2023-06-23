@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db_master": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/masterSchema -s master",
     "db_users": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/usersSchema -s users  --clean",
-    "db_job_hire": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/jobhireSchema -s jobhire -- clean"
+    "db_job_hire": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/jobhireSchema -s jobhire -- clean",
+    "db_bootcamp": "stg -D postgres -h localhost -p 5432 -d minprotim2 -u postgres -x ikhsan227g -i -o models/bootcampSchema -s bootcamp -- clean"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
