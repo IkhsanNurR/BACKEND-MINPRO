@@ -108,10 +108,10 @@ export class BootcampController {
     if (filesnya.length < 2) {
       for (let i = 0; i < filesnya.length; i++) {
         if (filesnya[i].fieldname == "cv") {
-          const imagePath = "./public/users/resume" + filesnya[i].filename;
-          const exist = fse.existsSync(imagePath);
-          if (fse.existsSync(imagePath)) {
-            fse.remove(imagePath);
+          const pdfPath = "./public/users/resume" + filesnya[i].filename;
+          const exist = fse.existsSync(pdfPath);
+          if (fse.existsSync(pdfPath)) {
+            fse.remove(pdfPath);
           }
         } else {
           const imagePath = "./public/users/image" + filesnya[i].filename;
