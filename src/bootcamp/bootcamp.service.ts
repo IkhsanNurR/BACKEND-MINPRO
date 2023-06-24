@@ -256,12 +256,12 @@ export class BootcampService {
       const cvType = cvFile.mimetype.split("/");
       const fotoFile = images.find((file) => file.fieldname === "foto");
       const fotoType = fotoFile.mimetype.split("/");
+      const resumePath = `http://localhost:3001/users/resume/${cvFile.filename}`;
       const apply = [
         {
           prap_user_entity_id: data.user_entity_id,
           prap_prog_entity_id: data.prog_entity_id,
           prap_status: "wait",
-          prap_gpa: data.prap_gpa,
         },
       ];
       const apply_prog = [
@@ -301,6 +301,7 @@ export class BootcampService {
             usme_filename: cvFile.filename,
             usme_filetype: cvType[1],
             usme_filesize: cvFile.size,
+            usme_filelink: resumePath,
           },
           { where: { usme_entity_id: data.user_entity_id } }
         );
@@ -319,17 +320,17 @@ export class BootcampService {
         return { data1, data2, data3, queryResult };
       });
       if (old_photo.user_photo) {
-        const imagePath = "./public/users/" + old_photo.user_photo;
+        const imagePath = "./public/users/image" + old_photo.user_photo;
         const exist = fse.existsSync(imagePath);
         if (fse.existsSync(imagePath)) {
           fse.remove(imagePath);
         }
       }
       if (old_media.usme_filename) {
-        const imagePath = "./public/users/" + old_media.usme_filename;
-        const exist = fse.existsSync(imagePath);
-        if (fse.existsSync(imagePath)) {
-          fse.remove(imagePath);
+        const filePath = "./public/users/resume" + old_media.usme_filename;
+        const exist = fse.existsSync(filePath);
+        if (fse.existsSync(filePath)) {
+          fse.remove(filePath);
         }
       }
       return messageHelper("yeay", 201, "berhasil");

@@ -8,9 +8,16 @@ import { SalesModule } from "./sales/sales.module";
 import { PaymentModule } from "./payment/payment.module";
 import { ProfileModule } from "./users/profile/profile.module";
 import { AuthModule } from "./users/auth/auth.module";
-import { skill_type } from "models/masterSchema";
+import {
+  category,
+  modules,
+  route_actions,
+  skill_template,
+  skill_type,
+} from "models/masterSchema";
 import { JobModule } from "./users/job/job.module";
 import { JobHireModule } from "./jobhire/jobhire.module";
+import { MasterModule } from "./master/master.module";
 
 @Module({
   imports: [
@@ -21,7 +28,7 @@ import { JobHireModule } from "./jobhire/jobhire.module";
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [skill_type],
+      models: [skill_template, skill_type, route_actions, modules, category],
       autoLoadModels: true,
       synchronize: true,
     }),
@@ -34,6 +41,7 @@ import { JobHireModule } from "./jobhire/jobhire.module";
     PaymentModule,
     ProfileModule,
     AuthModule,
+    MasterModule,
     // CityModule,
     // AddressTypeModule,
     // SkillTypeModule,

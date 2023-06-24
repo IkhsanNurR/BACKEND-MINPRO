@@ -27,17 +27,15 @@ export function MultiFileInterceptorWithDest() {
     {
       storage: diskStorage({
         destination: (req, file, cb) => {
-          console.log(file.mimetype);
-          console.log(file.originalname.endsWith(".jpg"));
           if (
             file.mimetype.startsWith("image") ||
             file.originalname.endsWith(".jpg") ||
             file.originalname.endsWith(".jpeg") ||
             file.originalname.endsWith(".png")
           ) {
-            cb(null, "./public/users");
+            cb(null, "./public/users/image");
           } else {
-            cb(null, "./public/users/cv");
+            cb(null, "./public/users/resume");
           }
         },
         filename: async (req, file, cb) => {
@@ -45,7 +43,6 @@ export function MultiFileInterceptorWithDest() {
             Math.random().toString(36).substring(2, 15) +
             Math.random().toString(36).substring(2, 15);
           const Suffix = file.originalname.trim();
-          console.log(file);
           return cb(null, file.fieldname + "-" + random + "-" + Suffix);
         },
       }),
@@ -116,6 +113,7 @@ export class BootcampController {
       return messageHelper("2 Field file harus diisi semua ya!", 400, "Gagal!");
     }
     return this.bootcampService.ApplyBatch(images, createbatch);
+    // return { images, createbatch };
   }
 
   @Get("bootcampindex")
