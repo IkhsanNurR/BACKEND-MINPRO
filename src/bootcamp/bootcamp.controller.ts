@@ -220,7 +220,7 @@ export class BootcampController {
 
   @Patch("closebatch")
   async PostSetToCloseBatch(@Body() data: any): Promise<any> {
-    return await this.bootcampService.PostSetBatchToClose(data);
+    return this.bootcampService.PostSetBatchToClose(data);
   }
 
   @Patch("deletebatch")

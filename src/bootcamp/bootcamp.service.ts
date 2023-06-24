@@ -343,7 +343,11 @@ export class BootcampService {
           fse.remove(imagePath);
         }
       }
-      return messageHelper("Alhamdulillah sudah daftar", 201, "berhasil");
+      return messageHelper(
+        "Selamat anda telah terdaftar!",
+        201,
+        "Pendaftaran berhasil"
+      );
     } catch (error) {
       const cvFile = images.find((file) => file.fieldname === "cv");
       const fotoFile = images.find((file) => file.fieldname === "foto");
@@ -365,7 +369,7 @@ export class BootcampService {
     try {
       //batchnya
       const batch: any[] = [data.batch];
-
+      console.log(batch);
       //trainee nya
       const data2: any = data.batchTrainees;
       const batchTrainees: any[] = data2.map((traineeId) => {
@@ -426,7 +430,7 @@ export class BootcampService {
       const deletedTrainee = JSON.stringify(deleted);
       const trainer = JSON.stringify(trainernya);
       console.log(addedTrainee, deletedTrainee, trainer);
-      const query = `CALL bootcamp.update_batch(:batch_id, :entity_id, :batch_name, :batch_desc, :start_date, :end_date, :batch_type, :pic_id, :addedTrainee, :deletedTrainee, :trainer)`;
+      const query = `CALL bootcamp.update_batch(:batch_id, :entity_id, :batch_name, :batch_desc, :start_date, :end_date, :batch_type, :addedTrainee, :deletedTrainee, :trainer)`;
       const result = await this.sequelize.query(query, {
         replacements: {
           batch_id: batch.batch_id,
@@ -436,7 +440,7 @@ export class BootcampService {
           start_date: batch.batch_start_date,
           end_date: batch.batch_end_date,
           batch_type: batch.batch_type,
-          pic_id: batch.batch_pic_id,
+          // pic_id: batch.batch_pic_id,
           addedTrainee: addedTrainee,
           deletedTrainee: deletedTrainee,
           trainer: trainer,
@@ -504,6 +508,7 @@ export class BootcampService {
           talent_trainer: datanya.talent_trainer,
           talent_skill: datanya.talent_skill ? datanya.talent_skill : "",
           talent_status: "idle",
+          talent_batch_name: batch_name,
         };
       });
       const membernya = JSON.stringify(batchTrainees);

@@ -18,9 +18,14 @@ import {
 import { JobModule } from "./users/job/job.module";
 import { JobHireModule } from "./jobhire/jobhire.module";
 import { MasterModule } from "./master/master.module";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { join } from "path";
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "..", "public"),
+    }),
     SequelizeModule.forRoot({
       dialect: "postgres",
       host: "localhost",
