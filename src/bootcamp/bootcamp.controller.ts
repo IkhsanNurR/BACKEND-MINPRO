@@ -27,6 +27,8 @@ export function MultiFileInterceptorWithDest() {
     {
       storage: diskStorage({
         destination: (req, file, cb) => {
+          console.log(file.mimetype);
+          console.log(file.originalname.endsWith(".jpg"));
           if (
             file.mimetype.startsWith("image") ||
             file.originalname.endsWith(".jpg") ||
@@ -43,6 +45,7 @@ export function MultiFileInterceptorWithDest() {
             Math.random().toString(36).substring(2, 15) +
             Math.random().toString(36).substring(2, 15);
           const Suffix = file.originalname.trim();
+          console.log(file);
           return cb(null, file.fieldname + "-" + random + "-" + Suffix);
         },
       }),
@@ -101,19 +104,26 @@ export class BootcampController {
     @UploadedFiles() files: { [fieldname: string]: Express.Multer.File[] }
   ) {
     // console.log(createbatch);
-    const images = [files.cv?.[0], files.foto?.[0]].filter(Boolean);
-    if (images.length < 2) {
-      for (let i = 0; i < images.length; i++) {
-        const imagePath = "./public/users" + images[i].filename;
-        const exist = fse.existsSync(imagePath);
-        if (fse.existsSync(imagePath)) {
-          fse.remove(imagePath);
+    const filesnya = [files.cv?.[0], files.foto?.[0]].filter(Boolean);
+    if (filesnya.length < 2) {
+      for (let i = 0; i < filesnya.length; i++) {
+        if (filesnya[i].fieldname == "cv") {
+          const pdfPath = "./public/users/resume" + filesnya[i].filename;
+          const exist = fse.existsSync(pdfPath);
+          if (fse.existsSync(pdfPath)) {
+            fse.remove(pdfPath);
+          }
+        } else {
+          const imagePath = "./public/users/image" + filesnya[i].filename;
+          const exist = fse.existsSync(imagePath);
+          if (fse.existsSync(imagePath)) {
+            fse.remove(imagePath);
+          }
         }
       }
       return messageHelper("2 Field file harus diisi semua ya!", 400, "Gagal!");
     }
-    return this.bootcampService.ApplyBatch(images, createbatch);
-    // return { images, createbatch };
+    return this.bootcampService.ApplyBatch(filesnya, createbatch);
   }
 
   @Get("bootcampindex")
