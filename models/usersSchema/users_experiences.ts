@@ -27,7 +27,6 @@ export class users_experiences extends Model<users_experiencesAttributes, users_
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('users.users_experiences_usex_id_seq'::regclass)") 
     })
@@ -49,11 +48,6 @@ export class users_experiences extends Model<users_experiencesAttributes, users_
     })
     @Index({
     	name: "users_experiences_pkey",
-    	using: "btree",
-    	unique: true 
-    })
-    @Index({
-    	name: "users_experiences_usex_entity_id_key",
     	using: "btree",
     	unique: true 
     })

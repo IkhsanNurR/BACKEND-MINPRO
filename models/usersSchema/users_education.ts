@@ -6,15 +6,15 @@ export interface users_educationAttributes {
     usdu_id?: number;
     usdu_entity_id: number;
     usdu_school?: string;
-    usdu_degree?: string;
     usdu_field_study?: string;
     usdu_graduate_year?: string;
-    usdu_start_date?: string;
-    usdu_end_date?: string;
+    usdu_start_date?: Date;
+    usdu_end_date?: Date;
     usdu_grade?: string;
     usdu_activities?: string;
     usdu_description?: string;
     usdu_modified_date?: Date;
+    usdu_degree?: string;
 }
 
 @Table({
@@ -26,7 +26,6 @@ export class users_education extends Model<users_educationAttributes, users_educ
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('users.users_education_usdu_id_seq'::regclass)") 
     })
@@ -61,12 +60,6 @@ export class users_education extends Model<users_educationAttributes, users_educ
 
     @Column({
     	allowNull: true,
-    	type: DataType.STRING(15) 
-    })
-    	usdu_degree?: string;
-
-    @Column({
-    	allowNull: true,
     	type: DataType.STRING(125) 
     })
     	usdu_field_study?: string;
@@ -79,15 +72,15 @@ export class users_education extends Model<users_educationAttributes, users_educ
 
     @Column({
     	allowNull: true,
-    	type: DataType.STRING 
+    	type: DataType.DATE 
     })
-    	usdu_start_date?: string;
+    	usdu_start_date?: Date;
 
     @Column({
     	allowNull: true,
-    	type: DataType.STRING 
+    	type: DataType.DATE 
     })
-    	usdu_end_date?: string;
+    	usdu_end_date?: Date;
 
     @Column({
     	allowNull: true,
@@ -112,5 +105,11 @@ export class users_education extends Model<users_educationAttributes, users_educ
     	type: DataType.DATE 
     })
     	usdu_modified_date?: Date;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.STRING(15) 
+    })
+    	usdu_degree?: string;
 
 }

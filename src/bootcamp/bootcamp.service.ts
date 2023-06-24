@@ -252,10 +252,20 @@ export class BootcampService {
       const old_media = await users_media.findOne({
         where: { usme_entity_id: data.user_entity_id },
       });
+      const daftar = await program_apply.findAll({
+        where: {
+          prap_user_entity_id: data.user_entity_id,
+          prap_prog_entity_id: data.prog_entity_id,
+        },
+      });
+      if (daftar.length >= 1) {
+        throw new Error("Sudah Pernah daftar!");
+      }
       const cvFile = images.find((file) => file.fieldname === "cv");
       const cvType = cvFile.mimetype.split("/");
       const fotoFile = images.find((file) => file.fieldname === "foto");
       const fotoType = fotoFile.mimetype.split("/");
+      const newPath = `http://localhost:3001/users/resume/${cvFile.filename}`;
       const apply = [
         {
           prap_user_entity_id: data.user_entity_id,
@@ -301,6 +311,7 @@ export class BootcampService {
             usme_filename: cvFile.filename,
             usme_filetype: cvType[1],
             usme_filesize: cvFile.size,
+            usme_filelink: newPath,
           },
           { where: { usme_entity_id: data.user_entity_id } }
         );
@@ -319,22 +330,34 @@ export class BootcampService {
         return { data1, data2, data3, queryResult };
       });
       if (old_photo.user_photo) {
-        const imagePath = "./public/users/" + old_photo.user_photo;
+        const imagePath = "./public/users/image" + old_photo.user_photo;
         const exist = fse.existsSync(imagePath);
         if (fse.existsSync(imagePath)) {
           fse.remove(imagePath);
         }
       }
       if (old_media.usme_filename) {
-        const imagePath = "./public/users/" + old_media.usme_filename;
+        const imagePath = "./public/users/resume" + old_media.usme_filename;
         const exist = fse.existsSync(imagePath);
         if (fse.existsSync(imagePath)) {
           fse.remove(imagePath);
         }
       }
-      return messageHelper("yeay", 201, "berhasil");
+      return messageHelper("Alhamdulillah sudah daftar", 201, "berhasil");
     } catch (error) {
-      return messageHelper(error.message, 400, "Gagal");
+      const cvFile = images.find((file) => file.fieldname === "cv");
+      const fotoFile = images.find((file) => file.fieldname === "foto");
+      const imagePath = `./public/users/image/${fotoFile.filename}`;
+      const resumePath = `./public/users/resume/${cvFile.filename}`;
+      const existfoto = fse.existsSync(imagePath);
+      if (fse.existsSync(imagePath)) {
+        fse.remove(imagePath);
+      }
+      const existresume = fse.existsSync(resumePath);
+      if (fse.existsSync(resumePath)) {
+        fse.remove(resumePath);
+      }
+      return messageHelper(error.message, 400, error.message);
     }
   }
 
@@ -348,8 +371,6 @@ export class BootcampService {
       const batchTrainees: any[] = data2.map((traineeId) => {
         return {
           batr_status: "selected",
-          // batr_access_token: "access_token",
-          // batr_access_grant: "0",
           batr_trainee_entity_id: traineeId,
         };
       });

@@ -36,7 +36,6 @@ export class users_email extends Model<users_emailAttributes, users_emailAttribu
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('users.users_email_pmail_id_seq'::regclass)") 
     })
@@ -51,11 +50,17 @@ export class users_email extends Model<users_emailAttributes, users_emailAttribu
     	allowNull: true,
     	type: DataType.STRING(50) 
     })
+    @Index({
+    	name: "pmail_address_unique",
+    	using: "btree",
+    	unique: true 
+    })
     	pmail_address?: string;
 
     @Column({
     	allowNull: true,
-    	type: DataType.DATE 
+    	type: DataType.DATE,
+    	defaultValue: Sequelize.literal("now()") 
     })
     	pmail_modified_date?: Date;
 

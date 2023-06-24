@@ -25,11 +25,6 @@ export class users_phones extends Model<users_phonesAttributes, users_phonesAttr
     	using: "btree",
     	unique: true 
     })
-    @Index({
-    	name: "users_phones_uspo_entity_id_key",
-    	using: "btree",
-    	unique: true 
-    })
     	uspo_entity_id!: number;
 
     @Column({

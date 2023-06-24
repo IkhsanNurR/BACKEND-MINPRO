@@ -5,7 +5,7 @@ import {
 export interface users_mediaAttributes {
     usme_id?: number;
     usme_entity_id: number;
-    usme_file_link?: string;
+    usme_filelink?: string;
     usme_filename?: string;
     usme_filesize?: number;
     usme_filetype?: string;
@@ -22,7 +22,6 @@ export class users_media extends Model<users_mediaAttributes, users_mediaAttribu
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('users.users_media_usme_id_seq'::regclass)") 
     })
@@ -53,7 +52,7 @@ export class users_media extends Model<users_mediaAttributes, users_mediaAttribu
     	allowNull: true,
     	type: DataType.STRING(255) 
     })
-    	usme_file_link?: string;
+    	usme_filelink?: string;
 
     @Column({
     	allowNull: true,

@@ -18,7 +18,6 @@ export class users_skill extends Model<users_skillAttributes, users_skillAttribu
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('users.users_skill_uski_id_seq'::regclass)") 
     })

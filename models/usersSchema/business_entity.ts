@@ -15,7 +15,6 @@ export class business_entity extends Model<business_entityAttributes, business_e
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('users.business_entity_entity_id_seq'::regclass)") 
     })

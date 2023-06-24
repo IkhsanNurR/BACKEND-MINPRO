@@ -19,7 +19,6 @@ export class users_license extends Model<users_licenseAttributes, users_licenseA
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('users.users_license_usli_id_seq'::regclass)") 
     })

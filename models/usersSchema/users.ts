@@ -26,7 +26,6 @@ export class users extends Model<usersAttributes, usersAttributes> implements us
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('users.users_user_entity_id_seq'::regclass)") 
     })

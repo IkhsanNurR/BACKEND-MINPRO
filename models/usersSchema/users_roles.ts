@@ -17,7 +17,6 @@ export class users_roles extends Model<users_rolesAttributes, users_rolesAttribu
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('users.users_roles_usro_entity_id_seq'::regclass)") 
     })
@@ -26,16 +25,10 @@ export class users_roles extends Model<users_rolesAttributes, users_rolesAttribu
     	using: "btree",
     	unique: true 
     })
-    @Index({
-    	name: "users_roles_usro_entity_id_key",
-    	using: "btree",
-    	unique: true 
-    })
     	usro_entity_id?: number;
 
     @Column({
     	primaryKey: true,
-    	autoIncrement: true,
     	type: DataType.INTEGER,
     	defaultValue: Sequelize.literal("nextval('users.users_roles_usro_role_id_seq'::regclass)") 
     })
