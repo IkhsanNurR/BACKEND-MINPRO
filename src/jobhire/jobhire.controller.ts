@@ -230,4 +230,35 @@ export class JobHireController {
   updateTalent(@Param("id") id: string, @Body() updateTalent: any) {
     return this.jobHireService.updateTalent(+id, updateTalent);
   }
+
+  // MASTER
+  @Get("master/roac")
+  findRouteAction() {
+    return this.jobHireService.findRouteAction();
+  }
+
+  @Get("master/edu")
+  findEducation() {
+    return this.jobHireService.findEducation();
+  }
+
+  @Get("master/worktype")
+  findWorktype() {
+    return this.jobHireService.findWorktype();
+  }
+
+  @Get("master/jobrole")
+  findJobrole() {
+    return this.jobHireService.findJobrole();
+  }
+
+  @Get("master/industry")
+  findIndustry() {
+    return this.jobHireService.findIndustry();
+  }
+
+  @Get("master/city")
+  findCity() {
+    return this.jobHireService.findCity();
+  }
 }
