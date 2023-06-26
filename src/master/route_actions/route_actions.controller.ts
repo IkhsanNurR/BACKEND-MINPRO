@@ -18,8 +18,8 @@ export class RouteActionsController {
 
   @Post()
   create(@Body() createRouteActionDto: CreateRouteActionDto) {
-    return "pos";
-    // return this.routeActionsService.create(createRouteActionDto);
+    // return "pos";
+    return this.routeActionsService.create(createRouteActionDto);
   }
 
   @Get()

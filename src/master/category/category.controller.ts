@@ -21,6 +21,9 @@ export class CategoryController {
       cate_name: createCategoryDto.cate_name,
       cate_cate_id: createCategoryDto.cate_cate_id,
     };
+    if (createCategoryDto.cate_cate_id === "0") {
+      data.cate_cate_id = null;
+    }
     return this.categoryService.create(data);
   }
 
@@ -43,6 +46,12 @@ export class CategoryController {
       cate_name: updateCategoryDto.cate_name,
       cate_cate_id: updateCategoryDto.cate_cate_id,
     };
+
+    // Tambahkan pengecekan jika cate_cate_id tidak valid atau tidak ada
+    if (!updateCategoryDto.cate_cate_id) {
+      data.cate_cate_id = null;
+    }
+
     return this.categoryService.update(+id, data);
   }
 
