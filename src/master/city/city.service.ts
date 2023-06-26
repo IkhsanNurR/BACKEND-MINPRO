@@ -21,7 +21,7 @@ export class CityService {
       const result = await this.sequelize.query(
         `select * from master.cityProv`
       );
-      return result;
+      return { data: result[0] };
     } catch (error) {
       return error.message;
     }

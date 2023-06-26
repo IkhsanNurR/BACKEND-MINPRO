@@ -16,8 +16,9 @@ export class ModulesController {
   constructor(private readonly modulesService: ModulesService) {}
 
   @Post()
-  create(@Body() createModuleDto: any) {
-    console.log(createModuleDto);
+  createee(@Body() createModuleDto: CreateModuleDto) {
+    // console.log(test);
+    // return test;
     return this.modulesService.create(createModuleDto);
   }
 

@@ -9,7 +9,10 @@ export class ModulesService {
   constructor(private readonly sequelize: Sequelize) {}
   async create(createModuleDto: CreateModuleDto) {
     try {
-      const result = await modules.create(createModuleDto);
+      console.log(createModuleDto);
+      const result = await modules.create({
+        module_name: createModuleDto.module_name,
+      });
       return result;
     } catch (error) {
       return error.message;

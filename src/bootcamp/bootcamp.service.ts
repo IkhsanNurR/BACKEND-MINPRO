@@ -440,7 +440,6 @@ export class BootcampService {
           start_date: batch.batch_start_date,
           end_date: batch.batch_end_date,
           batch_type: batch.batch_type,
-          // pic_id: batch.batch_pic_id,
           addedTrainee: addedTrainee,
           deletedTrainee: deletedTrainee,
           trainer: trainer,
@@ -495,6 +494,7 @@ export class BootcampService {
     try {
       const batch_id = data.batch_id;
       const batch_status = data.batch_status;
+      const batch_entity_id = data.batch_entity_id;
       const tanggal = new Date();
       const batch_name = data.batch_name;
       const tanggalClose = tanggal.toISOString().slice(0, 10);
@@ -509,6 +509,7 @@ export class BootcampService {
           talent_skill: datanya.talent_skill ? datanya.talent_skill : "",
           talent_status: "idle",
           talent_batch_name: batch_name,
+          talent_batch_entity_id: batch_entity_id,
         };
       });
       const membernya = JSON.stringify(batchTrainees);

@@ -15,13 +15,14 @@ async function bootstrap() {
       "http://localhost:3000",
     ], // Replace with your frontend server URL
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Add the allowed HTTP methods
-    // allowedHeaders: ["Content-Type", "Authorization"], // Add the allowed request headers
+    allowedHeaders: ["Content-Type", "Authorization"], // Add the allowed request headers
     credentials: true, // Set to true if you need to pass cookies or authentication headers
   };
   const port = process.env.PORT;
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({ credentials: true });
+  // app.use(express.urlencoded({ extended: true }));
   // app.enableCors(corsOptions);
   app.useStaticAssets(join(__dirname, "..", "..", "public"));
   app.use("/public", express.static("public"));
