@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { RolesGuards } from './guards';
+// import { RolesGuards } from './guards';
 import { APP_GUARD, Reflector } from '@nestjs/core';
 
 @Module({
@@ -18,10 +18,10 @@ import { APP_GUARD, Reflector } from '@nestjs/core';
   ],
   controllers: [],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuards,
-    },
+    // {
+    //   provide: APP_GUARD,
+    // useClass: RolesGuards,
+    // },
     Reflector,
   ],
 })

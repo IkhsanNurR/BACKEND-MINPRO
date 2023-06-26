@@ -1,57 +1,94 @@
-import { Injectable } from '@nestjs/common';
-import { CreateFintechDto } from './dto/create-fintech.dto';
-import { UpdateFintechDto } from './dto/update-fintech.dto';
-import { Sequelize } from 'sequelize-typescript';
-import { QueryTypes } from 'sequelize';
+import { Injectable } from "@nestjs/common";
+import { CreateFintechDto } from "./dto/create-fintech.dto";
+import { UpdateFintechDto } from "./dto/update-fintech.dto";
+import { Sequelize } from "sequelize-typescript";
+import { QueryTypes } from "sequelize";
 
 @Injectable()
 export class FintechService {
   constructor(private sequelize: Sequelize) {}
-  async createFintech(CreateFintechDto: CreateFintechDto): Promise<any> {
+  async createFintech(createFintechDto: CreateFintechDto): Promise<any> {
     try {
-    const data = `[${JSON.stringify(CreateFintechDto)}]`
-    const result = await this.sequelize.query(`CALL payment.insertfintech ('${data}')`)
-
-      return result
+      const codeCheck = await this.sequelize.query(
+        "SELECT * FROM payment.fintech WHERE fint_code = :fintCode",
+        {
+          replacements: {
+            fintCode: createFintechDto.fint_code,
+          },
+          type: QueryTypes.SELECT,
+        }
+      );
+  
+      if (codeCheck.length > 0) {
+        throw new Error("Fintech Code already exists!");
+      }
+  
+      const nameCheck = await this.sequelize.query(
+        "SELECT * FROM payment.fintech WHERE fint_name = :fintName",
+        {
+          replacements: {
+            fintName: createFintechDto.fint_name,
+          },
+          type: QueryTypes.SELECT,
+        }
+      );
+  
+      if (nameCheck.length > 0) {
+        throw new Error("Fintech Name already exists!");
+      }
+  
+      const data = `[${JSON.stringify(createFintechDto)}]`;
+      const result = await this.sequelize.query(
+        `CALL payment.insertfintech ('${data}')`
+      );
+  
+      const success = {
+        message: "Berhasil Membuat Fintech",
+        data: data[0],
+        status: 200,
+      };
+      return success;
     } catch (error) {
-      return error.message
+      return {
+        message: error.message || "Gagal Membuat Fintech",
+        status: 400,
+      };
+    }
   }
-}
+  
 
   async findAllFintech() {
     try {
-      const data = await this.sequelize.query('select * from payment.fintech ');
+      const data = await this.sequelize.query("select * from payment.fintech order by fint_entity_id asc ");
       const success = {
-        message: 'sukses',
+        message: "sukses",
         data: data[0],
       };
       return success;
     } catch (error) {
-      const errorm = {
-        message: error.message,
+      return {
         status: 400,
+        message: error.message,
       };
-
-      return errorm;
     }
   }
 
   async findOneFintech(id: number): Promise<any> {
     try {
       const [data, _]: any[] = await this.sequelize.query(
-        'SELECT * FROM payment.fintech WHERE fint_entity_id = :fint_entity_id',
+        "SELECT * FROM payment.fintech WHERE fint_entity_id = :fint_entity_id",
         {
           replacements: {
             fint_entity_id: id,
           },
           type: QueryTypes.SELECT,
-        },
+        }
       );
 
       if (data.length === 0) {
         return {
           status: 404,
-          message: 'Data bank tidak ditemukan',
+          message: "Data bank tidak ditemukan",
         };
       }
 
@@ -64,23 +101,57 @@ export class FintechService {
     }
   }
 
-  async updateFintech(id: number,UpdateFintechDto: UpdateFintechDto): Promise<any> {
+  async updateFintech(id: number, UpdateFintechDto: any): Promise<any> {
     try {
-      const result = {
-        entity_id:id,
-        fint_code: UpdateFintechDto.fint_code,
-        fint_name: UpdateFintechDto.fint_name
+      const codeCheck = await this.sequelize.query(
+        "SELECT * FROM payment.fintech WHERE fint_code = :fint_code AND fint_entity_id != :id",
+        {
+          replacements: {
+            fint_code: UpdateFintechDto.fint_code,
+            id: id,
+          },
+          type: QueryTypes.SELECT,
+        }
+      );
+  
+      if (codeCheck.length > 0) {
+        throw new Error("Fintech Code already exists!");
       }
-
-      const data1 = `[${JSON.stringify(result)}]`;
-    await this.sequelize.query(`CALL payment.updatefintech ('${data1}')`);
-
-
-    return {
-      message: 'succes'
-    }
+  
+      const nameCheck = await this.sequelize.query(
+        "SELECT * FROM payment.fintech WHERE fint_name = :fint_name AND fint_entity_id != :id",
+        {
+          replacements: {
+            fint_name: UpdateFintechDto.fint_name,
+            id: id,
+          },
+          type: QueryTypes.SELECT,
+        }
+      );
+  
+      if (nameCheck.length > 0) {
+        throw new Error("Fintech Name already exists!");
+      }
+  
+      const query = await this.sequelize.query(
+        `UPDATE payment.fintech SET fint_code = :fint_code, fint_name = :fint_name WHERE fint_entity_id = :id`,
+        {
+          replacements: {
+            fint_code: UpdateFintechDto.fint_code,
+            fint_name: UpdateFintechDto.fint_name,
+            id: id,
+          },
+          type: QueryTypes.UPDATE,
+        }
+      );
+  
+      return { message: "success", status: 200 };
     } catch (error) {
-      return error.message
+      const erro = {
+        message: error.message || "Failed to update Fintech",
+        status: 400,
+      };
+      return erro;
     }
   }
 
@@ -88,24 +159,19 @@ export class FintechService {
   async deleteFintech(id: number): Promise<any> {
     try {
       const result: any = await this.sequelize.query(
-        'DELETE FROM payment.fintech WHERE fint_entity_id = :fint_entity_id',
-        {
-          replacements: {
-            fint_entity_id: id,
-          },
-        },
+        `DELETE FROM payment.fintech WHERE fint_entity_id = ${id}`
       );
 
       if (result[1].rowCount === 0) {
         return {
           status: 404,
-          message: 'Data bank tidak ditemukan',
+          message: "Data Fintech tidak ditemukan",
         };
       }
 
       return {
         status: 200,
-        message: 'Data bank berhasil dihapus',
+        message: "Data Fintech berhasil dihapus",
       };
     } catch (error) {
       return {

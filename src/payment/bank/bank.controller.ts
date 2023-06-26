@@ -6,37 +6,37 @@ import {
   Put,
   Param,
   Delete,
-} from '@nestjs/common';
-import { BankService } from './bank.service';
-import { CreateBankDto } from './dto/create-bank.dto';
-import { UpdateBankDto } from './dto/update-bank.dto';
+} from "@nestjs/common";
+import { BankService } from "./bank.service";
+import { CreateBankDto } from "./dto/create-bank.dto";
+import { UpdateBankDto } from "./dto/update-bank.dto";
 
-@Controller('bank')
+@Controller("bank")
 export class BankController {
   constructor(private readonly bankService: BankService) {}
 
-  @Post('Create')
+  @Post("Create")
   create(@Body() createBankDto: CreateBankDto) {
     return this.bankService.createBank(createBankDto);
   }
 
-  @Get('All')
+  @Get("All")
   findAll() {
     return this.bankService.findAllBank();
   }
 
-  @Get('One/:id')
-  findOne(@Param('id') id: string) {
+  @Get("One/:id")
+  findOne(@Param("id") id: string) {
     return this.bankService.findOneBank(+id);
   }
 
-  @Put('Update/:id')
-  update(@Param('id') id: string, @Body() updateBankDto: UpdateBankDto) {
+  @Put("Update/:id")
+  update(@Param("id") id: string, @Body() updateBankDto: UpdateBankDto) {
     return this.bankService.updateBank(+id, updateBankDto);
   }
 
-  @Delete('Delete/:id')
-  remove(@Param('id') id: string) {
+  @Delete("Delete/:id")
+  remove(@Param("id") id: string) {
     return this.bankService.deleteBank(+id);
   }
 }

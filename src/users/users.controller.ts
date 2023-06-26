@@ -5,11 +5,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
-  @Post('/bootcamp')
-  signUpExternal(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.signUpBootcamp(createUserDto);
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
   }
 
   @Get()
@@ -17,14 +17,18 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get('/username/:username')
-  findByName(@Param('username') username: string) {
-    return this.usersService.findByName(username);
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(+id);
   }
 
-  @Get('/email/:email')
-  findByEmail(@Param('email') email: string) {
-    return this.usersService.findByEmail(email);
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(+id, updateUserDto);
   }
 
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(+id);
+  }
 }

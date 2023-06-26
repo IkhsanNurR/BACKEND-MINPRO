@@ -7,14 +7,9 @@ import { UpdateUsersAccountDto } from './dto/update-users_account.dto';
 export class UsersAccountController {
   constructor(private readonly usersAccountService: UsersAccountService) {}
 
-  @Post('CreateWFintech')
-  createWFintech(@Body() createUsersAccountDto: CreateUsersAccountDto) {
-    return this.usersAccountService.createUserAccountWFintech(createUsersAccountDto);
-  }
-
-  @Post('CreateWBank')
+  @Post('Create')
   createWBANK(@Body() createUsersAccountDto: CreateUsersAccountDto) {
-    return this.usersAccountService.createUserAccountWBank(createUsersAccountDto);
+    return this.usersAccountService.createUserAccount(createUsersAccountDto);
   }
 
   @Get('All')
@@ -27,14 +22,9 @@ export class UsersAccountController {
     return this.usersAccountService.findOneUserAccount(+id);
   }
 
-  @Put('UpdateWBank/:id')
-  updateWBank(@Param('id') id: string, @Body() updateUsersAccountDto: UpdateUsersAccountDto) {
-    return this.usersAccountService.updateUserAccountWBank(+id, updateUsersAccountDto);
-  }
-
-  @Put('UpdateWFintech/:id')
-  updateWFintech(@Param('id') id: string, @Body() updateUsersAccountDto: UpdateUsersAccountDto) {
-    return this.usersAccountService.updateUserAccountWFintech(+id, updateUsersAccountDto);
+  @Put('Update/:id')
+  updateAccount(@Param('id') id: string, @Body() updateUsersAccountDto: UpdateUsersAccountDto) {
+    return this.usersAccountService.updateUserAccount(+id, updateUsersAccountDto);
   }
 
   @Delete('Delete/:id')

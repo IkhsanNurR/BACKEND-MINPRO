@@ -1,14 +1,6 @@
-import { IsInt, IsString, IsNumber, IsDate, IsIn, IsNotEmpty, ValidateIf } from 'class-validator';
+import { IsInt, IsString, IsNumber, IsDate, IsIn, IsNotEmpty, ValidateIf, isNotEmpty } from 'class-validator';
 
 export class CreateUsersAccountDto {
-  
-  @ValidateIf((_, value) => value !== undefined)
-  @IsInt()
-  usac_fint_entity_id?: number;
-
-  @ValidateIf((_, value) => value !== undefined)
-  @IsInt()
-  usac_bank_entity_id?: number;
 
   @IsNotEmpty()
   @IsInt()
@@ -31,4 +23,8 @@ export class CreateUsersAccountDto {
   @IsString()
   @IsIn(['active', 'inactive', 'blokir'])
   usac_status: string;
+
+  @IsNotEmpty()
+  @IsString()
+  bank_name: string;
 }

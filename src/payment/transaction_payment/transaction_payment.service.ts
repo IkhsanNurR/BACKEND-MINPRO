@@ -9,15 +9,14 @@ export class TransactionPaymentService {
 
   async Topup(createTransactionPaymentDto: CreateTransactionPaymentDto): Promise<any> {
     try {
-      const { trpa_source_id, trpa_target_id, trpa_credit, trpa_type } = createTransactionPaymentDto;
+      const { trpa_source_id, trpa_target_id, trpa_credit } = createTransactionPaymentDto;
       const query = await this.sequelize.query(
-        `CALL payment.Topup(:p_usac_account_number_bank, :p_usac_account_number_fintech, :p_credit, :p_trpa_type)`,
+        `CALL payment.Topup(:p_usac_account_number_bank, :p_usac_account_number_fintech, :p_credit)`,
         {
           replacements: {
             p_usac_account_number_bank: trpa_source_id,
             p_usac_account_number_fintech: trpa_target_id,
             p_credit: trpa_credit,
-            p_trpa_type: trpa_type,
           },
           type: QueryTypes.RAW,
         }
