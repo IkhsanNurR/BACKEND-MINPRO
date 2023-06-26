@@ -57,6 +57,7 @@ WHERE tp.trpa_source_id = ua_source.usac_user_entity_id::varchar
   AND tp.trpa_target_id = ua_target.usac_user_entity_id::varchar;
 
 
+
 CREATE OR REPLACE PROCEDURE payment.insertbank(In data JSON)
 LANGUAGE plpgsql
 AS $$
@@ -132,6 +133,8 @@ BEGIN
     SELECT new_entity_id, fint_code, fint_name
     FROM json_to_recordset(data) fintech (fint_code VARCHAR, fint_name VARCHAR);
 END $$;
+
+
 
 CREATE OR REPLACE PROCEDURE payment.createUserAccountWEntity(
     IN user_entity_id INT,
@@ -390,25 +393,6 @@ BEGIN
         usac_modified_date = now()
     WHERE usac_account_number = p_usac_account_number_fintech
     RETURNING usac_saldo INTO v_fint_saldo;
-
-    -- Jika bank entity ID dan fintech entity ID berbeda, maka perlu dilakukan transfer antar bank
-    IF v_bank_entity_id != v_fint_entity_id THEN
-        -- Perbarui saldo bank fintech
-        UPDATE payment.users_account
-        SET usac_saldo = usac_saldo - p_credit,
-            usac_modified_date = now()
-        WHERE usac_account_number = p_usac_account_number_bank
-        AND usac_bank_entity_id = v_bank_entity_id
-        RETURNING usac_saldo INTO v_bank_saldo;
-
-        -- Perbarui saldo fintech
-        UPDATE payment.users_account
-        SET usac_saldo = usac_saldo + p_credit,
-            usac_modified_date = now()
-        WHERE usac_account_number = p_usac_account_number_fintech
-        AND usac_bank_entity_id = v_fint_entity_id
-        RETURNING usac_saldo INTO v_fint_saldo;
-    END IF;
 
     -- Insert bank account record if it doesn't exist
     INSERT INTO payment.users_account (usac_bank_entity_id, usac_user_entity_id, usac_account_number, usac_saldo, usac_type, usac_status)
