@@ -45,11 +45,6 @@ export class users_education extends Model<users_educationAttributes, users_educ
     	using: "btree",
     	unique: true 
     })
-    @Index({
-    	name: "users_education_usdu_entity_id_key",
-    	using: "btree",
-    	unique: true 
-    })
     	usdu_entity_id!: number;
 
     @Column({
