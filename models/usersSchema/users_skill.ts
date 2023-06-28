@@ -54,11 +54,6 @@ export class users_skill extends Model<users_skillAttributes, users_skillAttribu
     	allowNull: true,
     	type: DataType.STRING(15) 
     })
-    @Index({
-    	name: "users_skill_uski_skty_name_key",
-    	using: "btree",
-    	unique: true 
-    })
     	uski_skty_name?: string;
 
 }

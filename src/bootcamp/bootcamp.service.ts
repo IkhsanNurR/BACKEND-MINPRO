@@ -12,6 +12,7 @@ import { Sequelize } from "sequelize-typescript";
 import messageHelper from "src/messagehelper/message";
 import { v4 as uuidv4 } from "uuid";
 import * as fse from "fs-extra";
+import { program_entity } from "models/curriculumSchema";
 
 @Injectable()
 export class BootcampService {
@@ -118,7 +119,7 @@ export class BootcampService {
   async GetProgName() {
     try {
       const data = await this.sequelize.query(
-        "SELECT prog_entity_id,prog_title, prog_type from curriculum.program_entity"
+        "SELECT prog_entity_id,prog_title, prog_image, prog_type from curriculum.program_entity"
       );
       // if (data[0].length == 0) {
       //   throw new Error("Kosong");
@@ -495,6 +496,9 @@ export class BootcampService {
       const batch_id = data.batch_id;
       const batch_status = data.batch_status;
       const batch_entity_id = data.batch_entity_id;
+      const batch_skill = await program_entity.findOne({
+        where: { prog_entity_id: +batch_entity_id },
+      });
       const tanggal = new Date();
       const batch_name = data.batch_name;
       const tanggalClose = tanggal.toISOString().slice(0, 10);
@@ -506,7 +510,7 @@ export class BootcampService {
           talent_start_date: datanya.talent_start_date,
           talent_end_date: datanya.talent_end_date,
           talent_trainer: datanya.talent_trainer,
-          talent_skill: datanya.talent_skill ? datanya.talent_skill : "",
+          talent_skill: batch_skill.prog_tag_skill,
           talent_status: "idle",
           talent_batch_name: batch_name,
           talent_batch_entity_id: batch_entity_id,
@@ -514,6 +518,7 @@ export class BootcampService {
       });
       const membernya = JSON.stringify(batchTrainees);
       const query = `CALL bootcamp.closeBatch(:batch_id, :batch_status, :tanggal_end, :trainer)`;
+      console.log(query);
       const result = await this.sequelize.query(query, {
         replacements: {
           batch_id: batch_id,
@@ -822,12 +827,13 @@ export class BootcampService {
       return messageHelper(error.message, 400, "Gagal");
     }
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} bootcamp`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} bootcamp`;
+  async GetApplyProgress(id: number) {
+    try {
+      const query = `select * from bootcamp.UserProgramApplyProgress where prap_user_entity_id = ${id}`;
+      const result = await this.sequelize.query(query);
+      return messageHelper(result[0], 200, "berhasil!");
+    } catch (error) {
+      return messageHelper("Gagal", 400, error.message);
+    }
   }
 }

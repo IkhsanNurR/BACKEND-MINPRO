@@ -111,4 +111,13 @@ export class CreateHrDto {
   @IsDate()
   @Type(() => Date)
   endContract: Date;
+
+  ephi_entity_id: number;
+  @IsDate()
+  @Type(() => Date)
+  ephi_rate_change_date: Date;
+
+  ephi_rate_salary: number;
+
+  ephi_pay_frequence: number;
 }

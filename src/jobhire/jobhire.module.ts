@@ -8,6 +8,8 @@ import {
   job_photo,
   job_post,
   job_post_desc,
+  talent_apply,
+  talent_apply_progress,
 } from "models/jobhireSchema";
 
 @Module({
@@ -18,6 +20,8 @@ import {
       job_post,
       job_post_desc,
       client,
+      talent_apply,
+      talent_apply_progress,
     ]),
   ],
   controllers: [JobHireController],

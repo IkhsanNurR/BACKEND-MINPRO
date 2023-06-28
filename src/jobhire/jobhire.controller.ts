@@ -17,31 +17,6 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { client, job_post } from "models/jobhireSchema";
 
-// export function uploadGambar(): ReturnType<typeof FileInterceptor> {
-// const fileUpload = FileInterceptor('image', {
-//   storage: diskStorage({
-//     destination: './images',
-//     filename: async (req, file, cb) => {
-//       try {
-//         const clitId = req.body.jopo_clit_id;
-//         const clit = await client.findOne({
-//           where: {
-//             clit_id: clitId,
-//           },
-//           attributes: ['clit_name'],
-//         });
-
-//         if (!clit) {
-//           throw new Error('Client not found');
-//         }
-
-//         const filename = `${clit.clit_name}-${file.originalname}`;
-//         cb(null, filename);
-//       } catch (error) {
-//         cb(null, error);
-//       }
-//     },
-//   }),
 const fileUpload = FileInterceptor("image", {
   storage: diskStorage({
     destination: "./public/jobhire",
@@ -88,21 +63,6 @@ export class JobHireController {
     return this.jobHireService.createJopo(createJopo, image);
   }
 
-  // @Get()
-  // findAll(@Body() show: any) {
-  //   const pagination = show.pagination;
-  //   const search = show.search;
-  //   const filter = show.filter;
-  //   // console.log("limit",+show.pagination.limit, "offset", +show.pagination.offset);
-  //   return this.jobHireService.findAllJopo(pagination, search, filter);
-  // }
-
-  // @Get('search/:key?/:loc?')
-  // searchJobPost(@Param('key') key: string, @Param('loc') loc: string) {
-  //   // console.log('sSDASD', key, loc);
-  //   return this.jobHireService.searchJobPost(key || '', loc || '');
-  // }
-
   @Get("search")
   searchJobPost(
     @Query("key") key?: string,
@@ -114,17 +74,6 @@ export class JobHireController {
     @Query("terupdate") terupdate?: any,
     @Query("newest") newest?: any
   ) {
-    // console.log(
-    //   'DATATA',
-    //   key,
-    //   loc,
-    //   job,
-    //   type,
-    //   jobtype,
-    //   expe,
-    //   terupdate,
-    //   newest,
-    // );
     return this.jobHireService.searchJobPost(
       key || "",
       loc || "",
@@ -226,9 +175,30 @@ export class JobHireController {
     return this.jobHireService.findProCandidate();
   }
 
-  @Patch("talent/:id")
-  updateTalent(@Param("id") id: string, @Body() updateTalent: any) {
-    return this.jobHireService.updateTalent(+id, updateTalent);
+  @Get("talent/apply")
+  CandidateApply() {
+    return this.jobHireService.CandidateApply();
+  }
+
+  @Get("talent/interview")
+  CandidateInterview() {
+    return this.jobHireService.CandidateInterview();
+  }
+
+  @Get("talent/contract")
+  CandidateContract() {
+    return this.jobHireService.CandidateContract();
+  }
+
+  @Get("talent/failed")
+  CandidateFailed() {
+    return this.jobHireService.CandidateFailed();
+  }
+
+  @Patch("talent/update")
+  updateTalent(@Body() updateTalent: any) {
+    console.log(updateTalent);
+    return this.jobHireService.updateTalent(updateTalent);
   }
 
   // MASTER

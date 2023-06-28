@@ -50,6 +50,22 @@ export class CurriculumService {
     }
   }
 
+  async getEmployee() {
+    try {
+      const data = await this.sequelize.query(
+        "select * from curriculum.usersemployee"
+      );
+
+      return {
+        data: data[0],
+        message: "Sukses",
+        status: 200,
+      };
+    } catch (error) {
+      return error.message;
+    }
+  }
+
   async get() {
     try {
       const data = await this.sequelize.query(
@@ -203,6 +219,10 @@ export class CurriculumService {
 
   async createSections(CreateCurriculumDto: any): Promise<any> {
     try {
+      const datas = {
+        sect_title: CreateCurriculumDto.title,
+        sect_decription: CreateCurriculumDto.decription,
+      };
       console.log(CreateCurriculumDto);
       const data = `[${JSON.stringify(CreateCurriculumDto)}]`;
       const query = `CALL curriculum.add_section('${data}')`;
@@ -255,6 +275,15 @@ export class CurriculumService {
       JOIN curriculum.section_detail_material
       ON section_detail.secd_id = section_detail_material.sedm_secd_id;
       `);
+      return result;
+    } catch (error) {
+      return error.message;
+    }
+  }
+  async findAllMaster() {
+    try {
+      const query = `SELECT * FROM master.category`;
+      const result = await this.sequelize.query(query);
       return result;
     } catch (error) {
       return error.message;

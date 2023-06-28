@@ -17,6 +17,7 @@ import {
   users_email,
   users_media,
 } from "models/usersSchema";
+import { program_entity } from "models/curriculumSchema";
 @Module({
   imports: [
     SequelizeModule.forFeature([
@@ -31,6 +32,7 @@ import {
       users_email,
       users_media,
       users_education,
+      program_entity,
     ]),
   ],
   controllers: [BootcampController],

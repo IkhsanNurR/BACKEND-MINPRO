@@ -220,6 +220,7 @@ export class BootcampController {
 
   @Patch("closebatch")
   async PostSetToCloseBatch(@Body() data: any): Promise<any> {
+    console.log(data);
     return this.bootcampService.PostSetBatchToClose(data);
   }
 
@@ -274,8 +275,8 @@ export class BootcampController {
     return await this.bootcampService.UpdateCandidateStatusNotResponding(data);
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.bootcampService.remove(+id);
+  @Get("usersapplyprogress/:id")
+  async GetUserApplyProgress(@Param("id") id: any) {
+    return await this.bootcampService.GetApplyProgress(+id);
   }
 }

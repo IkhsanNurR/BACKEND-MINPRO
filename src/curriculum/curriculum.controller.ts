@@ -18,6 +18,7 @@ import { FileInterceptor, FilesInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import * as crypto from "crypto";
 import { ParseFilePipeBuilder } from "@nestjs/common";
+import { Sequelize } from "sequelize-typescript";
 
 export function uploadGambar(): ReturnType<typeof FileInterceptor> {
   return FileInterceptor("image", {
@@ -110,7 +111,10 @@ export class CurriculumController {
   findOne(@Param("id") id: string) {
     return this.curriculumService.findOne(+id);
   }
-
+  @Get("category")
+  findAllMaster() {
+    return this.curriculumService.findAllMaster();
+  }
   @Patch("koko/:id")
   @UseInterceptors(uploadGambar())
   update(
@@ -154,7 +158,7 @@ export class CurriculumController {
             file.originalname.endsWith(".jpeg") ||
             file.originalname.endsWith(".png")
           ) {
-            destination = "image";
+            destination = "/public/curiculum/images";
           } else if (
             file.mimetype.startsWith("video") ||
             file.originalname.endsWith(".mp4") ||
@@ -195,5 +199,10 @@ export class CurriculumController {
       +id,
       CreateCurriculumDto
     );
+  }
+
+  @Get()
+  getEmployee() {
+    return this.curriculumService.getEmployee();
   }
 }

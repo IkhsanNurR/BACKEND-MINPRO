@@ -54,7 +54,7 @@ export class HrService {
 
   //
 
-  async updateEmployee(createHrDto: CreateHrDto): Promise<any> {
+  async updateEmployee(createHrDto: any): Promise<any> {
     try {
       const user = await users.findOne({
         where: { user_entity_id: createHrDto.emp_entity_id },
@@ -83,7 +83,35 @@ export class HrService {
     }
   }
 
-  async createContractClientEmployee(createHrDto: CreateHrDto): Promise<any> {
+  async createSalary(createHrDto: CreateHrDto): Promise<any> {
+    try {
+      const user = await users.findOne({
+        where: { user_entity_id: createHrDto.ephi_entity_id },
+      });
+      if (!user) {
+        throw new Error("id tidak ada");
+      } else {
+        const sendData = {
+          ephi_entity_id: createHrDto.ephi_entity_id,
+          ephi_rate_change_date: createHrDto.ephi_rate_change_date,
+          ephi_rate_salary: createHrDto.ephi_rate_salary,
+          ephi_pay_frequence: createHrDto.ephi_pay_frequence,
+        };
+
+        const data = `${JSON.stringify(sendData)}`;
+        const query = `CALL hr.createSalaryEmployee('${data}')`;
+        // const query = `CALL hr.createemployee('${createHrDto.emp_entity_id,createHrDto.emp_emp_number,createHrDto.emp_national_id,createHrDto.emp_birth_date,createHrDto.emp_marital_status,createHrDto.emp_gender,createHrDto.emp_hire_date,createHrDto.emp_end_contract,createHrDto.emp_salaried_flag,createHrDto.emp_vacation_hours,createHrDto.emp_sickleave_hours,createHrDto.emp_current_flag, createHrDto.emp_type,createHrDto.emp_joro_id,createHrDto.emp_emp_entity_id,createHrDto.user_role,createHrDto.department_id}')`
+        console.log(query);
+        const result = await this.sequelize.query(query);
+
+        return messageHelper(result, 200, "Bisa");
+      }
+    } catch (error) {
+      return messageHelper(error.message, 400, "Tidak Bisa");
+    }
+  }
+
+  async createContractClientEmployee(createHrDto: any): Promise<any> {
     try {
       const user = await users.findOne({
         where: { user_entity_id: createHrDto.emp_entity_id },
@@ -120,7 +148,7 @@ export class HrService {
         const result = await this.sequelize.query(query);
         console.log("query tidak bisa");
 
-        return messageHelper(result, 200, "Bisa");
+        return messageHelper(result, 201, "Success");
       }
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa");
@@ -173,7 +201,7 @@ export class HrService {
         console.log(query);
         const result = await this.sequelize.query(query);
 
-        return messageHelper(result, 200, "Bisa Apply Talent");
+        return messageHelper(result, 201, "Bisa Apply Talent");
       }
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa Apply Talent");
@@ -186,7 +214,7 @@ export class HrService {
 
       const result = await this.sequelize.query(query);
 
-      return messageHelper(result, 200, "Bisa Apply Talent");
+      return messageHelper(result, 201, "Bisa Apply Talent");
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa Apply Talent");
     }
@@ -198,7 +226,7 @@ export class HrService {
 
       const result = await this.sequelize.query(query);
 
-      return messageHelper(result, 200, "Bisa Apply Talent");
+      return messageHelper(result, 201, "Bisa Apply Talent");
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa Apply Talent");
     }
@@ -212,7 +240,7 @@ export class HrService {
 
       const result = await this.sequelize.query(query);
 
-      return messageHelper(result, 200, "Bisa Apply Talent");
+      return messageHelper(result, 201, "Bisa Apply Talent");
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa Apply Talent");
     }
@@ -224,7 +252,7 @@ export class HrService {
 
       const result = await this.sequelize.query(query);
 
-      return messageHelper(result, 200, "Bisa Apply Talent");
+      return messageHelper(result, 201, "Bisa Apply Talent");
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa Apply Talent");
     }
@@ -236,7 +264,7 @@ export class HrService {
 
       const result = await this.sequelize.query(query);
 
-      return messageHelper(result, 200, "Bisa Apply Talent");
+      return messageHelper(result, 201, "Bisa Apply Talent");
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa Apply Talent");
     }
@@ -247,7 +275,7 @@ export class HrService {
 
       const result = await this.sequelize.query(query);
 
-      return messageHelper(result, 200, "Bisa Apply Talent");
+      return messageHelper(result, 201, "Bisa Apply Talent");
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa Apply Talent");
     }
@@ -259,7 +287,7 @@ export class HrService {
 
       const result = await this.sequelize.query(query);
 
-      return messageHelper(result, 200, "Bisa Apply Talent");
+      return messageHelper(result, 201, "Bisa Apply Talent");
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa Apply Talent");
     }
@@ -271,7 +299,7 @@ export class HrService {
 
       const result = await this.sequelize.query(query);
 
-      return messageHelper(result, 200, "Bisa Apply Talent");
+      return messageHelper(result, 201, "Bisa Apply Talent");
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa Apply Talent");
     }
@@ -283,7 +311,7 @@ export class HrService {
 
       const result = await this.sequelize.query(query);
 
-      return messageHelper(result, 200, "Bisa Apply Talent");
+      return messageHelper(result, 201, "Bisa Apply Talent");
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa Apply Talent");
     }
@@ -295,7 +323,7 @@ export class HrService {
 
       const result = await this.sequelize.query(query);
 
-      return messageHelper(result, 200, "Bisa Apply Talent");
+      return messageHelper(result, 201, "Bisa Apply Talent");
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa Apply Talent");
     }
@@ -307,7 +335,7 @@ export class HrService {
 
       const result = await this.sequelize.query(query);
 
-      return messageHelper(result, 200, "Bisa Apply Talent");
+      return messageHelper(result, 201, "Bisa Apply Talent");
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa Apply Talent");
     }
@@ -319,7 +347,7 @@ export class HrService {
 
       const result = await this.sequelize.query(query);
 
-      return messageHelper(result, 200, "Bisa Apply Talent");
+      return messageHelper(result, 201, "Bisa Apply Talent");
     } catch (error) {
       return messageHelper(error.message, 400, "Tidak Bisa Apply Talent");
     }

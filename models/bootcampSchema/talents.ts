@@ -14,6 +14,7 @@ export interface talentsAttributes {
     talent_skill?: string;
     talent_status?: string;
     talent_batch_name?: string;
+    talent_batch_entity_id?: number;
 }
 
 @Table({
@@ -95,5 +96,11 @@ export class talents extends Model<talentsAttributes, talentsAttributes> impleme
     	type: DataType.STRING(15) 
     })
     	talent_batch_name?: string;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.INTEGER 
+    })
+    	talent_batch_entity_id?: number;
 
 }

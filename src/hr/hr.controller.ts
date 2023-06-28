@@ -28,15 +28,20 @@ export class HrController {
     return this.hrService.createEmployee(createHrDto);
   }
 
+  @Post("create-salary")
+  createSalary(@Body() createHrDto: CreateHrDto) {
+    return this.hrService.createSalary(createHrDto);
+  }
+
   @Patch("update")
-  updateEmployee(@Body() createHrDto: CreateHrDto) {
+  updateEmployee(@Body() createHrDto: any) {
     return this.hrService.updateEmployee(createHrDto);
   }
 
   //
 
   @Post("createfrombootcamp")
-  createContractClientEmployee(@Body() createHr: CreateHrDto) {
+  createContractClientEmployee(@Body() createHr: any) {
     return this.hrService.createContractClientEmployee(createHr);
   }
 

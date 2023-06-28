@@ -38,7 +38,7 @@ export class JobService {
       ];
 
       const res = await this.sequelize.query(
-        `CALL job_hire.createtalent('${JSON.stringify(data)}')`
+        `CALL jobhire.createtalent('${JSON.stringify(data)}')`
       );
 
       return {
